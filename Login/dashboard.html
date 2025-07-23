@@ -1,0 +1,179 @@
+<html><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --primary-50: #f0fdf4;
+      --primary-100: #dcfce7;
+      --primary-200: #bbf7d0;
+      --primary-300: #86efac;
+      --primary-400: #4ade80;
+      --primary-500: #22c55e;
+      --primary-600: #16a34a;
+      --primary-700: #15803d;
+      --primary-800: #166534;
+      --primary-900: #14532d;
+      --primary-950: #052e16;
+      --secondary-50: #fafafa;
+      --secondary-100: #f5f5f5;
+      --secondary-200: #e5e5e5;
+      --secondary-300: #d4d4d4;
+      --secondary-400: #a3a3a3;
+      --secondary-500: #737373;
+      --secondary-600: #525252;
+      --secondary-700: #404040;
+      --secondary-800: #262626;
+      --secondary-900: #171717;
+      --secondary-950: #0a0a0a;
+    }
+  </style>
+</head>
+<body class="bg-secondary-50 text-secondary-900" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<div class="flex min-h-screen flex-col">
+<!-- START: Corrected Header -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        
+       <!-- Logo -->
+<div class="flex items-center">
+    <!-- The new text-based leaf icon -->
+    <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+
+    <!-- The LeafCalc text -->
+    <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+</div>
+        
+        <!-- Right Aligned Container: Nav + Account -->
+        <div class="hidden md:flex items-center">
+            <nav class="flex items-center space-x-8">
+
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="#home">Home</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="#about-us">About Us</a>
+            </nav>
+
+            <!-- Vertical Fade Line -->
+            <div class="w-px h-6 bg-gray-300 mx-6"></div>
+
+            <!-- START: Account Icon Dropdown -->
+            <div class="relative group">
+                <!-- Default Account Icon SVG -->
+                <svg alt="User Account" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent group-hover:ring-[#53d22c] group-hover:scale-105" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg>
+                
+            </div>
+            <!-- END: Account Icon Dropdown -->
+        </div>
+    </div>
+</header>
+<main class="flex-1 bg-primary-50 py-12"> <!-- fern green vibe background -->
+<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 rounded-lg bg-white shadow-lg p-8">
+<h1 class="text-4xl font-extrabold tracking-tight text-secondary-900">Account</h1>
+<p class="mt-2 text-lg text-secondary-500">Manage your profile and settings.</p>
+<div class="mt-10 space-y-12">
+<section class="rounded-lg border border-secondary-200 bg-white shadow-sm">
+<div class="p-6">
+<h2 class="text-xl font-semibold text-secondary-900">Profile</h2>
+<div class="mt-6 flex flex-col items-center gap-6 sm:flex-row">
+<div class="relative">
+<div class="h-32 w-32 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpAhgEA8Zg5ZuT6UjfTNB56qT0jMMBMUOQ1uEhjGEnsGI51KUalR3u7NhLXX9pWkc8ZMF5AwlbZo3aVAUX5akV-Hvv140pWySBMm77vi4H-ce3hGQ4Zw_zcNkHCkDIM3Zp6pe5d9ET2LlJIpjKcHH5KLP3fFShOnB3AMmNBOK4botHmhGz6_qygsY3-1bI6v_9YMHtMCvtSOKajo66u0BKQ8nwtPEq6H1AzsWH1wMeiBsxPestmflvGdzAGHTCRgygj33sq2lRJHVH");'></div>
+<button class="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-full bg-white text-secondary-600 shadow-md hover:bg-secondary-100">
+<svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88v48a8,8,0,0,0,8,8h48V216Zm-40-64a8,8,0,0,1-8,8H104a8,8,0,0,1,0-16h48A8,8,0,0,1,160,152Zm0,32a8,8,0,0,1-8,8H104a8,8,0,0,1,0-16h48A8,8,0,0,1,160,184Z"></path>
+</svg>
+</button>
+</div>
+<div class="text-center sm:text-left">
+<h3 class="text-2xl font-bold text-secondary-900">Sophia Bennett</h3>
+<p class="text-base text-secondary-500">Full-Stack Developer</p>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+<div>
+<label class="block text-sm font-medium text-secondary-700" for="fullName">Full Name</label>
+<input class="mt-1 block w-full rounded-lg border-secondary-300 bg-secondary-50 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="fullName" type="text" value="Sophia Bennett"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-secondary-700" for="company">Company</label>
+<input class="mt-1 block w-full rounded-lg border-secondary-300 bg-secondary-50 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="company" type="text" value="GreenTech Solutions"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-secondary-700" for="designation">Designation</label>
+<input class="mt-1 block w-full rounded-lg border-secondary-300 bg-secondary-50 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="designation" type="text" value="Full-Stack Developer"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-secondary-700" for="industry">Industry</label>
+<input class="mt-1 block w-full rounded-lg border-secondary-300 bg-secondary-50 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="industry" type="text" value="Renewable Energy"/>
+</div>
+<div class="relative">
+<label class="block text-sm font-medium text-secondary-700" for="email">Email</label>
+<input class="mt-1 block w-full rounded-lg border-secondary-300 bg-secondary-50 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="email" type="email" value="sophia.bennett@example.com"/>
+<button class="absolute right-3 top-8 text-sm font-medium text-primary-600 hover:text-primary-800">Edit</button>
+</div>
+<div class="relative">
+<label class="block text-sm font-medium text-secondary-700" for="phone">Phone</label>
+<input class="mt-1 block w-full rounded-lg border-secondary-300 bg-secondary-50 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="phone" type="tel" value="+1 (555) 123-4567"/>
+<button class="absolute right-3 top-8 text-sm font-medium text-primary-600 hover:text-primary-800">Edit</button>
+</div>
+<div class="sm:col-span-2">
+<label class="block text-sm font-medium text-secondary-700" for="address">Address</label>
+<input class="mt-1 block w-full rounded-lg border-secondary-300 bg-secondary-50 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="address" type="text" value="123 Eco Lane, Green City, GC 12345"/>
+</div>
+</div>
+<div class="mt-6 flex justify-end">
+<button class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">Save Changes</button>
+</div>
+</div>
+</section>
+<section class="rounded-lg border border-secondary-200 bg-white shadow-sm">
+<div class="p-6">
+<h2 class="text-xl font-semibold text-secondary-900">Advanced Settings</h2>
+<div class="mt-6 space-y-6">
+<div>
+<label class="block text-sm font-medium text-secondary-700" for="password">Change Password</label>
+<div class="relative mt-1">
+<input class="block w-full rounded-lg border-secondary-300 bg-secondary-50 pr-10 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm" id="password" placeholder="Enter new password" type="password"/>
+<button class="absolute inset-y-0 right-0 flex items-center pr-3 text-secondary-500 hover:text-secondary-700">
+<svg fill="currentColor" height="20" viewBox="0 0 256 256" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path>
+</svg>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-sm font-medium text-secondary-700">Connected Accounts</h3>
+<p class="mt-1 text-sm text-secondary-500">Connect social accounts for seamless login.</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-300 bg-white text-secondary-600 hover:bg-secondary-100">G</button>
+<button class="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-300 bg-white text-secondary-600 hover:bg-secondary-100">A</button>
+<button class="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-300 bg-white text-secondary-600 hover:bg-secondary-100">M</button>
+<button class="flex h-8 w-8 items-center justify-center rounded-full border border-secondary-300 bg-white text-secondary-600 hover:bg-secondary-100">L</button>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-sm font-medium text-secondary-700">Notification Preferences</h3>
+<p class="mt-1 text-sm text-secondary-500">Manage your email and in-app notifications.</p>
+</div>
+<button class="rounded-lg border border-secondary-300 bg-white px-3 py-1.5 text-sm font-semibold text-secondary-700 shadow-sm hover:bg-secondary-50">Manage</button>
+</div>
+</div>
+</div>
+</section>
+<section class="rounded-lg border border-gray-200 bg-white shadow-sm">
+  <div class="flex justify-between items-center p-6">
+    <button class="rounded-lg bg-green-500 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-green-600">
+      Sign Out
+    </button>
+    <button class="text-sm font-medium text-red-600 hover:text-red-800">Delete Account</button>
+  </div>
+</section>
+</div>
+</main>
+</div>
+
+</body></html>

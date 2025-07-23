@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>User Profile - LeafCalc</title>
+    <link rel="icon" type="image/png" href="../Logos/Leafcalc Fevicon.png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+    <style type="text/tailwindcss">
+        :root {
+            /* Using the official LeafCalc vibrant green */
+            --fern-green: #53d22c;
+        }
+        body {
+            /* MODIFIED: Standardized font and suggested bg-gray-100 for better contrast */
+            font-family: 'Inter', sans-serif;
+            @apply bg-gray-100 text-gray-800;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js" defer></script>
+</head>
+<body class="antialiased">
+<div class="flex min-h-screen flex-col">
+    <!-- MODIFIED: Header updated to full LeafCalc style -->
+   <!-- START: Corrected Header -->
+<!-- === PASTE THIS CORRECTED HEADER IN BOTH FILES === -->
+<!-- === THIS IS THE FINAL HEADER FOR ALL AUTHENTICATED PAGES === -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        
+        <!-- Logo -->
+        <div class="flex items-center">
+            <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+            <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+        </div>
+        
+        <!-- Right Aligned Container: Nav + Account -->
+        <div class="hidden md:flex items-center">
+            <nav class="flex items-center space-x-8">
+                <!-- Update hrefs to point to the correct files -->
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html">Home</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html#about-us">About Us</a>
+            </nav>
+
+            <!-- Vertical Fade Line -->
+            <div class="w-px h-6 bg-gray-300 mx-6"></div>
+
+            <!-- User Icon links directly to profile page -->
+            <a href="user_profile.html">
+                <!-- 
+                  THIS 'id' IS THE CRITICAL PART. 
+                  It's how the JavaScript finds this specific element. 
+                -->
+                <div id="nav-user-icon">
+                    <!-- Default SVG Icon shows while the user's avatar is loading -->
+                    <svg alt="User Account" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg>
+                </div>
+            </a>
+        </div>
+    </div>
+</header>
+   <!-- === COPY AND PASTE THIS ENTIRE MAIN SECTION === -->
+<main class="flex-1 py-12 pt-28">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 space-y-8">
+
+        <!-- === START: PASTE THIS NEW BLOCK === -->
+<!-- Page Title -->
+<div>
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900">My Profile</h1>
+    <p class="mt-1 text-sm text-gray-500">Manage your account settings and personal information below.</p>
+</div>
+<!-- === END: PASTE THIS NEW BLOCK === -->
+        <!-- Main Profile Card -->
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6 sm:p-8">
+            
+            <!-- ====== START: TOP PROFILE HEADER ====== -->
+            <div class="flex items-center gap-6">
+                <!-- Profile Picture with Edit Icon -->
+                <div id="profile-pic-container" class="relative flex-shrink-0">
+                    <!-- The image or default SVG will be loaded here by JavaScript -->
+                    <div id="profile-pic-display">
+                        <svg alt="User Account" class="h-32 w-32 rounded-full ring-4 ring-white/50 shadow-lg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg>
+                    </div>
+                    <!-- The new "Pen" Icon to change picture -->
+                    <label for="profile-pic-upload" class="absolute bottom-1 right-1 cursor-pointer rounded-full bg-white p-2 shadow-lg transition-transform hover:scale-110">
+                        <span class="material-icons text-gray-600" style="font-size: 20px;">edit</span>
+                    </label>
+                    <input id="profile-pic-upload" type="file" class="hidden" accept="image/png, image/jpeg">
+                </div>
+
+                <!-- Name and Position Display -->
+                <div class="flex-grow">
+                    <!-- This is where the name will be displayed (read-only) -->
+                    <h1 id="profile-display-name" class="text-4xl font-extrabold tracking-tight text-gray-900">Loading...</h1>
+                    <!-- This is where the position will be displayed (read-only) -->
+                    <p id="profile-display-position" class="mt-1 text-lg text-[var(--fern-green)]">Loading...</p>
+                </div>
+            </div>
+            <!-- ====== END: TOP PROFILE HEADER ====== -->
+
+            <hr class="my-10 border-t border-white/30">
+
+            <form id="profileForm" class="space-y-8">
+                <!-- Personal Information Section -->
+                <div>
+                    <div class="flex justify-between items-baseline mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">Personal Information</h2>
+                        <!-- This is the new Edit/Save button -->
+                        <div>
+                             <button type="button" id="editProfileBtn" class="rounded-lg bg-white/50 px-4 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-50/50 transition">Edit Profile</button>
+                             <button type="button" id="cancelEditBtn" class="hidden rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-200/50 transition">Cancel</button>
+                             <button type="button" id="saveProfileBtn" class="hidden rounded-lg bg-[var(--fern-green)] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90">Save Changes</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                         <!-- Full Name and Position INPUTS (hidden by default) -->
+                         <div class="hidden">
+                            <label class="block text-sm font-medium text-gray-700" for="fullName">Full Name</label>
+                            <input class="form-input mt-1" id="fullName" type="text" placeholder="Your full name"/>
+                        </div>
+                         <div class="hidden">
+                            <label class="block text-sm font-medium text-gray-700" for="position">Position / Role</label>
+                            <input class="form-input mt-1" id="position" type="text" placeholder="Your role"/>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" for="companyName">Company Name</label>
+                            <input class="form-input mt-1 bg-gray-200/50" id="companyName" type="text" placeholder="Loading..." disabled/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" for="industry">Industry</label>
+                            <input class="form-input mt-1 bg-gray-200/50" id="industry" type="text" placeholder="Loading..." disabled/>
+                        </div>
+                         <div>
+                            <label class="block text-sm font-medium text-gray-700" for="phone">Phone Number</label>
+                            <input class="form-input mt-1 bg-gray-200/50" id="phone" type="tel" placeholder="Loading..." disabled/>
+                        </div>
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-gray-700" for="email">Email</label>
+                            <input class="form-input mt-1 bg-gray-200/50" id="email" type="email" placeholder="Loading..." disabled/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Section -->
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900">Change Password</h2>
+                     <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                         <div>
+                            <label class="block text-sm font-medium text-gray-700" for="new-password">New Password</label>
+                            <input class="form-input mt-1" id="new-password" placeholder="Enter new password" type="password"/>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700" for="confirm-password">Confirm New Password</label>
+                            <input class="form-input mt-1" id="confirm-password" placeholder="Confirm new password" type="password"/>
+                        </div>
+                     </div>
+                      <div class="mt-4 flex justify-end">
+                          <button id="savePasswordBtn" type="button" class="rounded-lg bg-[var(--fern-green)] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90">Update Password</button>
+                      </div>
+                </div>
+            </form>
+        </section>
+        
+        <!-- NEW CTA Section (Replaces Danger Zone) -->
+        <section class="rounded-full bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 px-6 py-4">
+             <div class="flex justify-between items-center">
+                <button id="signOutBtn" class="rounded-full bg-gray-200/80 px-5 py-2 text-sm font-semibold text-gray-800 shadow-sm hover:bg-gray-300/80 transition">
+                    Sign Out
+                </button>
+                <button id="deleteAccountBtn" class="rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-red-700 transition">
+                    Delete Account
+                </button>
+            </div>
+        </section>
+    </div>
+</main>
+</div>
+<!-- === PASTE THIS ENTIRE SCRIPT TAG BEFORE </body> === -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js" defer></script> 
+
+<!-- === PASTE THIS ENTIRE SCRIPT TAG BEFORE </body> === -->
+<script>
+    // --- DOM ELEMENT REFERENCES ---
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const savePasswordBtn = document.getElementById('savePasswordBtn');
+    const signOutBtn = document.getElementById('signOutBtn');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    
+    // User Display Elements
+    const displayName = document.getElementById('profile-display-name');
+    const displayPosition = document.getElementById('profile-display-position');
+
+    // User Info Input Fields
+    const allInputs = ['fullName', 'position', 'companyName', 'industry', 'phone'].map(id => document.getElementById(id));
+    const fullNameInput = document.getElementById('fullName');
+    const positionInput = document.getElementById('position');
+    const companyInput = document.getElementById('companyName');
+    const industryInput = document.getElementById('industry');
+    const phoneInput = document.getElementById('phone');
+    const emailInput = document.getElementById('email');
+
+    // Profile Picture Elements
+    const profilePicUpload = document.getElementById('profile-pic-upload');
+    const profilePicDisplay = document.getElementById('profile-pic-display');
+    const navUserIcon = document.getElementById('nav-user-icon');
+
+    let currentUser = null; // A global variable to hold the user's data
+    let isEditMode = false; // A state to track if we are in "edit mode"
+
+    // --- MAIN FUNCTION TO LOAD PAGE DATA ---
+    async function loadUserProfile() {
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+        // NOTE: The redirection logic is currently commented out for development.
+        /*
+        if (error || !user) {
+            console.error('Error fetching user or no user logged in:', error);
+            window.location.href = 'Signin.html'; 
+            return;
+        }
+        */
+        // If testing without a user, we stop here.
+        if (!user) return; 
+
+        currentUser = user; 
+
+        // 1. Populate Display Text and Form Fields
+        const metadata = user.user_metadata || {};
+        displayName.textContent = metadata.full_name || 'Set your name';
+        displayPosition.textContent = metadata.position || 'Set your position';
+
+        fullNameInput.value = metadata.full_name || '';
+        positionInput.value = metadata.position || '';
+        companyInput.value = metadata.company_name || '';
+        industryInput.value = metadata.industry || '';
+        phoneInput.value = metadata.phone || '';
+        emailInput.value = user.email || '';
+
+        // 2. Populate Profile Pictures
+        const avatarUrl = metadata.avatar_url;
+        const defaultAvatar = `<svg alt="User Account" class="h-32 w-32 rounded-full ring-4 ring-white/50 shadow-lg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg>`;
+        const navDefaultAvatar = `<svg alt="User Account" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg>`;
+        
+        if (avatarUrl) {
+            profilePicDisplay.innerHTML = `<img src="${avatarUrl}" alt="User Avatar" class="h-32 w-32 rounded-full ring-4 ring-white/50 shadow-lg object-cover">`;
+            navUserIcon.innerHTML = `<img src="${avatarUrl}" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer object-cover ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105">`;
+        } else {
+            profilePicDisplay.innerHTML = defaultAvatar;
+            navUserIcon.innerHTML = navDefaultAvatar;
+        }
+    }
+
+    // --- "EDIT MODE" LOGIC ---
+    function setEditMode(isEditing) {
+        isEditMode = isEditing;
+
+        // Toggle visibility of display text vs. input fields
+        displayName.classList.toggle('hidden', isEditing);
+        displayPosition.classList.toggle('hidden', isEditing);
+        
+        fullNameInput.parentElement.classList.toggle('hidden', !isEditing);
+        positionInput.parentElement.classList.toggle('hidden', !isEditing);
+
+        // Enable/disable inputs
+        allInputs.forEach(input => {
+            input.disabled = !isEditing;
+            input.classList.toggle('bg-gray-200/50', !isEditing);
+        });
+
+        // Toggle visibility of action buttons
+        editProfileBtn.classList.toggle('hidden', isEditing);
+        saveProfileBtn.classList.toggle('hidden', !isEditing);
+        cancelEditBtn.classList.toggle('hidden', !isEditing);
+    }
+
+    // --- DATA SAVING AND EVENT HANDLERS ---
+    
+    // SAVE PROFILE CHANGES (Personal Info)
+    saveProfileBtn.addEventListener('click', async () => {
+        if (!currentUser) return;
+
+        const updatedMetadata = {
+            full_name: fullNameInput.value,
+            position: positionInput.value,
+            company_name: companyInput.value,
+            industry: industryInput.value,
+            phone: phoneInput.value
+        };
+
+        const { error } = await supabaseClient.auth.updateUser({ data: updatedMetadata });
+
+        if (error) {
+            alert("Error updating profile: " + error.message);
+        } else {
+            alert("Profile updated successfully!");
+            // Refresh display and exit edit mode
+            displayName.textContent = updatedMetadata.full_name;
+            displayPosition.textContent = updatedMetadata.position;
+            setEditMode(false);
+        }
+    });
+
+    // UPDATE PASSWORD
+    savePasswordBtn.addEventListener('click', async () => {
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        if (!newPassword) {
+            alert("Please enter a new password.");
+            return;
+        }
+        if (newPassword !== confirmPassword) {
+            alert("The new passwords do not match.");
+            return;
+        }
+        
+        const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+
+        if (error) {
+            alert("Error updating password: " + error.message);
+        } else {
+            alert("Your password has been updated successfully!");
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+        }
+    });
+    
+    // UPLOAD PROFILE PICTURE
+    profilePicUpload.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file || !currentUser) return;
+
+        const fileName = `${currentUser.id}/${Date.now()}`;
+        const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(fileName, file);
+
+        if (uploadError) {
+            alert('Error uploading picture: ' + uploadError.message);
+            return;
+        }
+        
+        const { data: { publicUrl } } = supabaseClient.storage.from('avatars').getPublicUrl(fileName);
+
+        const { error: updateUserError } = await supabaseClient.auth.updateUser({
+            data: { avatar_url: publicUrl }
+        });
+
+        if (updateUserError) {
+            alert('Error saving new picture: ' + updateUserError.message);
+        } else {
+            alert('Profile picture updated!');
+            loadUserProfile(); // Reload to show the new picture
+        }
+    });
+
+    // Initial event listeners
+    document.addEventListener('DOMContentLoaded', loadUserProfile);
+    editProfileBtn.addEventListener('click', () => setEditMode(true));
+    cancelEditBtn.addEventListener('click', () => {
+        loadUserProfile(); // Re-fetch original data
+        setEditMode(false);
+    });
+    
+    // Sign Out & Delete
+    signOutBtn.addEventListener('click', async () => { /* ... (no changes) ... */ });
+    deleteAccountBtn.addEventListener('click', async () => { /* ... (no changes) ... */ });
+
+</script>
+</body>
+</html>

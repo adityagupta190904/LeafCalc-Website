@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <title>LeafCalc - Executive Dashboard</title>
+    <link rel="icon" type="image/png" href="Logos/Leafcalc Fevicon.png">
+    <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Chart.js for interactive charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    
+    <style type="text/tailwindcss">
+        :root {
+            --fern-green-dark: #4F9358;
+            --fern-green: #63B76C;
+            --fern-green-light: #A5D6A7;
+            --scope1-color: #3b82f6; /* Blue 500 */
+            --scope2-color: #8b5cf6; /* Violet 500 */
+            --scope3-color: #ec4899; /* Pink 500 */
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f8fafc; /* Use a slightly cooler gray */
+        }
+        
+        .tooltip {
+            @apply invisible absolute;
+        }
+
+        .has-tooltip:hover .tooltip {
+            @apply visible z-50;
+        }
+        
+        @keyframes count-up {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-count-up {
+            animation: count-up 0.5s ease-out forwards;
+        }
+
+        .card-glow {
+             box-shadow: 0 0 0 0 rgba(99, 183, 108, 0.0);
+             transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .card-glow:hover {
+            box-shadow: 0 0 20px 0 rgba(99, 183, 108, 0.3);
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+    <div class="flex min-h-screen flex-col">
+        <!-- HEADER -->
+        <header class="sticky top-0 z-30 flex items-center justify-between border-b border-gray-200/80 bg-white/80 px-10 py-4 backdrop-blur-lg">
+             <div class="flex items-center">
+                <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+                <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+            </div>
+            <nav class="flex items-center gap-2 rounded-full bg-gray-100 p-1">
+                <a class="bg-white text-fern-green-dark shadow-md rounded-full px-4 py-1.5 text-sm font-semibold" href="#">Dashboard</a>
+                <a class="hover:text-fern-green-dark text-gray-500 rounded-full px-4 py-1.5 text-sm font-medium transition-colors" href="#">Inventory</a>
+                <a class="hover:text-fern-green-dark text-gray-500 rounded-full px-4 py-1.5 text-sm font-medium transition-colors" href="#">Reduction</a>
+                <a class="hover:text-fern-green-dark text-gray-500 rounded-full px-4 py-1.5 text-sm font-medium transition-colors" href="#">Reporting</a>
+                <a class="hover:text-fern-green-dark text-gray-500 rounded-full px-4 py-1.5 text-sm font-medium transition-colors" href="#">Settings</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                 <button class="has-tooltip relative hover:bg-gray-200 flex size-10 cursor-pointer items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors">
+                     <span class="material-icons">notifications</span>
+                     <span class="absolute top-1 right-1 flex h-3 w-3">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                 </button>
+                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-offset-2 ring-fern-green" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOCxB8I5k4WvVzRRX96KpYMQbtrRzgJLbgDd8LQb9YtM88tnyYx3IB4KmYNXE7H_nBPmCM1u2OjzPESp5xIZbDXyvW7rpNibk0N_SThKnXZ3g9piYrAhzKhcg4LNcPrAG-iWhPWJOFvWC51mjLDWijzjzZlAzXDwFdy9WD-kFA6zG9PH86Vk2yes-29gWGDtDewjT-a2k8L9sRmh7ODC1JF5bwi-mykz8GXvIPDEg4G1R5piZhotTILxx9MpHA0rhmn_YtOVmuf3TK");'></div>
+            </div>
+        </header>
+
+        <main class="flex-1 px-10 py-8">
+            <div class="mx-auto max-w-screen-2xl">
+                 <!-- PAGE HEADER WITH FILTERS -->
+                <div class="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between">
+                     <div>
+                        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Executive Dashboard</h1>
+                        <p class="text-gray-500 mt-1">Real-time carbon footprint analysis for ACME Corp.</p>
+                     </div>
+                     <div class="flex items-center gap-2 mt-4 md:mt-0">
+                        <select class="rounded-lg border-gray-300 text-sm shadow-sm focus:border-fern-green focus:ring-fern-green">
+                             <option>Last 30 Days</option>
+                             <option>Last 90 Days</option>
+                             <option selected>Year-to-Date</option>
+                             <option>All Time</option>
+                         </select>
+                         <button class="flex items-center gap-2 rounded-lg border border-transparent bg-fern-green px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-fern-green-dark">
+                             <span>Export PDF</span>
+                         </button>
+                     </div>
+                </div>
+
+                <!-- KPI CARDS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+                     <!-- Card 1: Total Emissions -->
+                    <div class="card-glow flex flex-col gap-3 rounded-2xl border border-gray-200/80 bg-white p-6">
+                         <div class="flex items-center justify-between">
+                            <p class="text-md font-semibold text-gray-600">Total CO₂e Emissions</p>
+                            <span class="material-icons text-green-500 text-3xl">public</span>
+                        </div>
+                        <p class="animate-count-up text-4xl font-bold text-gray-900">2,350<span class="text-lg font-medium text-gray-500"> tCO₂e</span></p>
+                        <div class="flex items-center text-sm font-semibold text-green-600">
+                             <span class="material-icons">arrow_downward</span><span>-6.0% below industry benchmark (2,500 t)</span>
+                         </div>
+                    </div>
+                    <!-- Card 2: Scope 1 -->
+                    <div class="card-glow flex flex-col gap-3 rounded-2xl border border-gray-200/80 bg-white p-6">
+                         <div class="flex items-center justify-between">
+                            <p class="text-md font-semibold text-gray-600">Scope 1 (Direct)</p>
+                             <span class="material-icons text-blue-500 text-3xl">factory</span>
+                         </div>
+                        <p class="animate-count-up text-4xl font-bold text-gray-900">1,200<span class="text-lg font-medium text-gray-500"> tCO₂e</span></p>
+                        <div class="flex items-center text-sm font-semibold text-red-500">
+                            <span class="material-icons">arrow_upward</span><span>+4.3% above target</span>
+                         </div>
+                     </div>
+                     <!-- Card 3: Scope 2 -->
+                    <div class="card-glow flex flex-col gap-3 rounded-2xl border border-gray-200/80 bg-white p-6">
+                         <div class="flex items-center justify-between">
+                             <p class="text-md font-semibold text-gray-600">Scope 2 (Energy)</p>
+                            <span class="material-icons text-violet-500 text-3xl">bolt</span>
+                         </div>
+                         <p class="animate-count-up text-4xl font-bold text-gray-900">850<span class="text-lg font-medium text-gray-500"> tCO₂e</span></p>
+                        <div class="flex items-center text-sm font-semibold text-green-600">
+                            <span class="material-icons">arrow_downward</span><span>-15% vs last period</span>
+                         </div>
+                     </div>
+                     <!-- Card 4: Scope 3 -->
+                    <div class="card-glow flex flex-col gap-3 rounded-2xl border border-gray-200/80 bg-white p-6">
+                         <div class="flex items-center justify-between">
+                            <p class="text-md font-semibold text-gray-600">Scope 3 (Value Chain)</p>
+                            <span class="material-icons text-pink-500 text-3xl">local_shipping</span>
+                         </div>
+                         <p class="animate-count-up text-4xl font-bold text-gray-900">300<span class="text-lg font-medium text-gray-500"> tCO₂e</span></p>
+                        <div class="flex items-center text-sm font-semibold text-green-600">
+                            <span class="material-icons">check_circle</span><span>Data coverage: 85%</span>
+                         </div>
+                     </div>
+                     <!-- Card 5: Reduction Target -->
+                    <div class="card-glow flex flex-col gap-3 rounded-2xl border border-fern-green/50 bg-green-50/50 p-6">
+                         <div class="flex items-center justify-between">
+                             <p class="text-md font-semibold text-green-800">2030 Reduction Goal</p>
+                             <span class="material-icons text-green-600 text-3xl">flag</span>
+                         </div>
+                         <p class="animate-count-up text-4xl font-bold text-green-900">35%<span class="text-lg font-medium text-green-700"> complete</span></p>
+                         <p class="text-sm font-semibold text-green-800">Target: 40% reduction by 2030</p>
+                    </div>
+                 </div>
+
+                <!-- MAIN CHARTING AREA -->
+                 <div class="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-8">
+                     <!-- Col 1: Breakdown Chart -->
+                     <div class="rounded-2xl border border-gray-200/80 bg-white p-6 flex flex-col">
+                         <h3 class="text-lg font-bold text-gray-900">Emissions Breakdown</h3>
+                         <div class="my-auto flex items-center justify-center py-6">
+                             <div class="relative h-64 w-64">
+                                 <canvas id="emissionsDonutChart"></canvas>
+                             </div>
+                         </div>
+                     </div>
+
+                    <!-- Col 2: Trend Chart -->
+                     <div class="rounded-2xl border border-gray-200/80 bg-white p-6 xl:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                             <h3 class="text-lg font-bold text-gray-900">Emissions Trend (YTD)</h3>
+                            <div class="flex items-center gap-4 text-sm">
+                                <span class="flex items-center gap-2"><div class="h-2 w-4 rounded-full" style="background-color: var(--scope1-color)"></div>Scope 1</span>
+                                <span class="flex items-center gap-2"><div class="h-2 w-4 rounded-full" style="background-color: var(--scope2-color)"></div>Scope 2</span>
+                                <span class="flex items-center gap-2"><div class="h-2 w-4 rounded-full" style="background-color: var(--scope3-color)"></div>Scope 3</span>
+                            </div>
+                        </div>
+                        <div class="h-80 w-full">
+                            <canvas id="emissionsTrendChart"></canvas>
+                         </div>
+                     </div>
+                 </div>
+
+                <!-- BOTTOM TABLES AREA -->
+                 <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-8">
+                     <!-- Top Sources Table -->
+                     <div class="rounded-2xl border border-gray-200/80 bg-white overflow-hidden">
+                        <h3 class="border-b border-gray-200 p-6 text-lg font-bold text-gray-900">Top Emission Hotspots</h3>
+                         <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 text-xs font-semibold uppercase text-gray-500">
+                                     <tr>
+                                         <th class="px-6 py-3">Source</th>
+                                         <th class="px-6 py-3">tCO₂e</th>
+                                         <th class="px-6 py-3">% of Total Emissions</th>
+                                     </tr>
+                                 </thead>
+                                <tbody class="divide-y divide-gray-200 text-sm">
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-gray-800 flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color: var(--scope1-color)"></span>Manufacturing Processes</td>
+                                        <td class="px-6 py-4 text-gray-600">810</td>
+                                        <td class="px-6 py-4">
+                                             <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="h-2.5 rounded-full" style="width: 34%; background-color: var(--scope1-color);"></div></div>
+                                         </td>
+                                     </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-gray-800 flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color: var(--scope2-color)"></span>Purchased Electricity</td>
+                                         <td class="px-6 py-4 text-gray-600">650</td>
+                                         <td class="px-6 py-4">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="h-2.5 rounded-full" style="width: 28%; background-color: var(--scope2-color);"></div></div>
+                                         </td>
+                                     </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-gray-800 flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color: var(--scope1-color)"></span>Company Vehicles</td>
+                                        <td class="px-6 py-4 text-gray-600">390</td>
+                                        <td class="px-6 py-4">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="h-2.5 rounded-full" style="width: 17%; background-color: var(--scope1-color);"></div></div>
+                                         </td>
+                                     </tr>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-gray-800 flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background-color: var(--scope3-color)"></span>Business Travel (Flights)</td>
+                                        <td class="px-6 py-4 text-gray-600">210</td>
+                                        <td class="px-6 py-4">
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5"><div class="h-2.5 rounded-full" style="width: 9%; background-color: var(--scope3-color);"></div></div>
+                                         </td>
+                                     </tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                     </div>
+
+                    <!-- Actionable Insights -->
+                    <div class="rounded-2xl border border-gray-200/80 bg-white overflow-hidden">
+                        <h3 class="border-b border-gray-200 p-6 text-lg font-bold text-gray-900">Reduction Opportunities</h3>
+                        <div class="p-6 space-y-4">
+                             <div class="flex items-center gap-4 rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:bg-white hover:-translate-y-1">
+                                 <div class="flex-shrink-0 bg-blue-100 rounded-lg p-3">
+                                     <span class="material-icons text-3xl text-blue-500">ev_station</span>
+                                 </div>
+                                 <div class="flex-grow">
+                                    <h4 class="font-bold text-gray-800">Electrify Corporate Fleet</h4>
+                                     <p class="mt-1 text-sm text-green-700 font-semibold">Potential Savings: 80 tCO₂e/year</p>
+                                 </div>
+                                 <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold p-2 rounded-full transition-colors"><span class="material-icons">arrow_forward</span></button>
+                             </div>
+                            <div class="flex items-center gap-4 rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:bg-white hover:-translate-y-1">
+                                 <div class="flex-shrink-0 bg-violet-100 rounded-lg p-3">
+                                     <span class="material-icons text-3xl text-violet-500">solar_power</span>
+                                 </div>
+                                 <div class="flex-grow">
+                                     <h4 class="font-bold text-gray-800">Sign Renewable PPA</h4>
+                                     <p class="mt-1 text-sm text-green-700 font-semibold">Potential Savings: 120 tCO₂e/year</p>
+                                 </div>
+                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold p-2 rounded-full transition-colors"><span class="material-icons">arrow_forward</span></button>
+                             </div>
+                        </div>
+                     </div>
+                 </div>
+
+             </div>
+        </main>
+    </div>
+
+    <!-- JavaScript to Power the Charts -->
+    <script>
+       // Helper function to get root style colors
+        const getRootColor = (colorName) => {
+            const style = getComputedStyle(document.documentElement);
+            return style.getPropertyValue(colorName).trim();
+        };
+
+        const scope1Color = getRootColor('--scope1-color');
+        const scope2Color = getRootColor('--scope2-color');
+        const scope3Color = getRootColor('--scope3-color');
+        
+        // 1. Emissions Donut Chart
+        const donutCtx = document.getElementById('emissionsDonutChart').getContext('2d');
+        const emissionsDonutChart = new Chart(donutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Scope 1', 'Scope 2', 'Scope 3'],
+                datasets: [{
+                    label: 'Emissions Breakdown',
+                    data: [1200, 850, 300],
+                    backgroundColor: [scope1Color, scope2Color, scope3Color],
+                    borderColor: '#fff',
+                    borderWidth: 4,
+                    hoverOffset: 12
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 14,
+                                family: "'Manrope', sans-serif"
+                            },
+                            usePointStyle: true,
+                            pointStyle: 'rectRounded'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed.toLocaleString() + ' tCO₂e';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 2. Emissions Trend Line Chart
+        const trendCtx = document.getElementById('emissionsTrendChart').getContext('2d');
+        const emissionsTrendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Scope 1',
+                        data: [210, 200, 220, 190, 180, 200],
+                        borderColor: scope1Color,
+                        backgroundColor: scope1Color + '33', // with opacity
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: 'Scope 2',
+                        data: [150, 160, 140, 145, 130, 125],
+                        borderColor: scope2Color,
+                        backgroundColor: scope2Color + '33',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                    },
+                     {
+                        label: 'Scope 3',
+                        data: [40, 45, 55, 50, 60, 50],
+                        borderColor: scope3Color,
+                        backgroundColor: scope3Color + '33',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                 scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 12, family: "'Manrope', sans-serif" }}
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#e5e7eb',
+                            borderDash: [5, 5]
+                        },
+                         ticks: {
+                             callback: function(value) { return value + ' t'; },
+                             font: { size: 12, family: "'Manrope', sans-serif" }
+                         }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }, // Legend is now custom HTML above
+                    tooltip: {
+                         mode: 'index',
+                         intersect: false,
+                         backgroundColor: '#1f2937',
+                         titleFont: { weight: 'bold'},
+                         bodyFont: { size: 14},
+                         padding: 12,
+                         cornerRadius: 8
+                     }
+                 },
+                 interaction: {
+                     mode: 'index',
+                     intersect: false,
+                 }
+            }
+        });
+    </script>
+</body>
+</html>

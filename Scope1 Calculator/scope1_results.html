@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Scope 1 Analysis Dashboard - LeafCalc</title>
+    <link rel="icon" type="image/png" href="../Logos/Leafcalc Fevicon.png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+    <style type="text/tailwindcss">
+        :root { --fern-green: #53d22c; }
+        body { font-family: 'Inter', sans-serif; @apply bg-gray-100; }
+        .text-fern-green { color: var(--fern-green); }
+    </style>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../supabase-client.js" defer></script>
+</head>
+<body class="antialiased text-gray-800">
+
+<!-- Header -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center"><span class="material-icons text-4xl text-[#53d22c]">eco</span><span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span></div>
+        <div class="hidden md:flex items-center"><nav class="flex items-center space-x-8"><a class="text-gray-600 hover:text-[#53d22c]" href="landingpage_after_signup.html">Home</a><a class="text-gray-600 hover:text-[#53d22c]" href="landingpage_after_signup.html#about-us">About Us</a></nav><div class="w-px h-6 bg-gray-300 mx-6"></div><a href="user_profile.html"><div id="nav-user-icon"><svg alt="User Account" class="w-10 h-10 rounded-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg></div></a></div>
+    </div>
+</header>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm transition-opacity duration-300 hidden">
+    <div class="text-center text-white">
+        <span class="material-icons text-8xl text-[#53d22c] animate-pulse">eco</span>
+        <p class="text-2xl font-bold mt-4">Calculating Emissions...</p>
+        <p class="text-base text-gray-300 mt-2">Contacting the Climatiq API for accurate data...</p>
+    </div>
+</div>
+
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+    <!-- Main Title -->
+    <div class="mb-4 px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold text-gray-900 tracking-tight">Scope 1 Emissions Analysis</h2>
+    </div>
+
+    <!-- Sub-Navigation Bar -->
+    <!-- Sub-Navigation Bar -->
+<nav class="flex justify-center py-4">
+  <div class="flex flex-wrap justify-center gap-3 rounded-full bg-white/30 backdrop-blur-sm shadow-lg px-4 py-3">
+    
+    <!-- Inactive Tabs -->
+    <a href="stationary_combustion.html"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Stationary
+    </a>
+    <a href="mobile_combustion.html"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Mobile
+    </a>
+    <a href="fugitive.html"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Fugitive
+    </a>
+    <a href="process_emission.html"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Process
+    </a>
+
+    <!-- Active Tab -->
+    <a href="review.html"
+      class="px-5 py-2 rounded-full text-black border border-[#53d22c] bg-[#53d22c]/20 backdrop-blur-md shadow 
+             transition-all duration-300 ease-out 
+             hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Results
+    </a>
+  </div>
+</nav>
+    
+    <!-- Hero Section -->
+    <div class="mt-8">
+        <div class="relative rounded-2xl overflow-hidden h-64">
+            <img alt="Industrial factory representing direct emissions" class="w-full h-full object-cover" src="HeroScope1Image/ResultandSummary.174Z.png"/>
+            <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-4 text-center">
+                <h1 class="text-white text-4xl font-bold">Your Emissions Report</h1>
+                <p id="reporting-period-display" class="mt-2 text-lg text-gray-200">Loading reporting period...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI & Pie Chart Grid -->
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6 flex flex-col justify-center text-center">
+            <h3 class="text-lg font-semibold text-gray-700">Total Emissions for Selected Period</h3>
+            <p id="total-emissions-kg" class="text-5xl font-extrabold text-fern-green my-2">--</p>
+            <p id="total-emissions-tonnes" class="text-base text-gray-600">-- tCO₂e</p>
+        </section>
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 text-center">Emissions Breakdown</h3>
+            <div class="h-64 flex items-center justify-center">
+                <canvas id="breakdown-chart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <!-- Time-Series Bar Chart Grid -->
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6 flex flex-col">
+             <h3 class="text-lg font-semibold text-gray-700 mb-4">Stationary Combustion</h3>
+             <div class="relative w-full flex-grow"><canvas id="stationary_combustion-chart"></canvas></div>
+        </section>
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6 flex flex-col">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Mobile Combustion</h3>
+            <div class="relative w-full flex-grow"><canvas id="mobile_combustion-chart"></canvas></div>
+        </section>
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6 flex flex-col">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Fugitive Emissions</h3>
+            <div class="relative w-full flex-grow"><canvas id="fugitive_emissions-chart"></canvas></div>
+        </section>
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6 flex flex-col">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Process Emissions</h3>
+            <div class="relative w-full flex-grow"><canvas id="process_emissions-chart"></canvas></div>
+        </section>
+    </div>
+
+    <!-- Insights Grid -->
+    <div class="mt-8 grid grid-cols-1 gap-8">
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Summary & Insights</h3>
+            <div id="summary-text-container" class="space-y-3 text-gray-700"><p>Analyzing trends...</p></div>
+        </section>
+        <section class="rounded-2xl bg-white/40 backdrop-blur-xl shadow-xl border border-white/20 p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Suggestions</h3>
+            <div id="suggestions-text-container" class="space-y-3 text-gray-700"><p>Generating recommendations...</p></div>
+        </section>
+    </div>
+</main>
+
+<!-- Footer CTA Pill -->
+<!-- Glassmorphic CTA Pill Footer -->
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-[95%] max-w-lg px-4 z-50">
+  <div class="flex justify-between items-center bg-white/10 rounded-full shadow-lg px-6 py-3 border border-white/20 backdrop-blur-sm">
+    
+    <!-- Check Another Result Link -->
+    <a href="review.html"
+      class="px-6 py-2 rounded-full bg-white/30 text-black font-semibold shadow-lg border border-white/20 
+             hover:bg-white/40 active:scale-95 transition-all duration-300 ease-out 
+             hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Check Another Result
+    </a>
+
+    <!-- Dashboard Link -->
+    <a href="landingpage_after_signup.html"
+      class="px-6 py-2 rounded-full bg-[#53d22c]/20 text-black font-semibold shadow-lg border border-[#53d22c]/30 
+             active:scale-95 transition-all duration-300 ease-out backdrop-blur-sm 
+             hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Dashboard
+    </a>
+
+  </div>
+</div>
+
+<script src="scope1_result-script.js" defer></script>
+
+<script>
+    /* Auth Check Script - Enable for deployment */
+    // async function checkAndLoadUser() { ... }
+    // document.addEventListener('DOMContentLoaded', checkAndLoadUser);
+</script>
+
+</body>
+</html>

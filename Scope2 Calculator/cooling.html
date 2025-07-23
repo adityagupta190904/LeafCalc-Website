@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Scope 2 Emissions Calculator - Purchased Cooling - LeafCalc</title>
+<link rel="icon" type="image/png" href="../Logos/Leafcalc Fevicon.png">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<!-- START: Final Consolidated Styles -->
+<style type="text/tailwindcss">
+    :root {
+        --fern-green: #53d22c;
+    }
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* --- COLOR UTILITIES --- */
+    .fern-green {
+        background-color: var(--fern-green);
+    }
+    .text-fern-green {
+        color: var(--fern-green);
+    }
+    .border-fern-green {
+        border-color: var(--fern-green);
+    }
+    .focus\:ring-fern-green:focus {
+        --tw-ring-color: var(--fern-green);
+    }
+    .focus\:border-fern-green:focus {
+        --tw-border-opacity: 1;
+        border-color: var(--fern-green);
+    }
+    
+    /* --- ALL ANIMATIONS (KEYFRAMES) --- */
+    
+    /* General fade-in for cards and elements */
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Used for the month/year picker dropdown */
+    @keyframes fade-slide {
+      from { opacity: 0; transform: translateY(-0.5rem); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animation for new table rows appearing */
+    @keyframes fade-in-row {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animation for the custom modal appearing */
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* "Fade to Dust" animation for deleting rows */
+    @keyframes fade-to-dust {
+      from { opacity: 1; transform: scale(1) translateY(0); }
+      to { opacity: 0; transform: scale(0.8) translateY(20px); filter: blur(4px); }
+    }
+    
+    /* Shake animation for validation errors */
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    /* --- ANIMATION UTILITY CLASSES --- */
+    .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
+    .animate-fade-slide { animation: fade-slide 0.3s ease-out forwards; }
+    .animate-fade-in-row { animation: fade-in-row 0.4s ease-out forwards; }
+    .animate-fade-in-up { animation: fade-in-up 0.3s ease-out forwards; }
+    .fade-to-dust-animation { animation: fade-to-dust 0.6s ease-out forwards; }
+    .animate-shake { animation: shake 0.5s ease-in-out; }
+    
+    /* --- NEW DRAG-AND-DROP GLOW EFFECT --- */
+    #dropzone {
+        /* This makes the glow appear and disappear smoothly */
+        transition: box-shadow 0.3s ease-out;
+    }
+    .drag-over-valid {
+        /* A fern-green inset shadow to create the "glow" effect */
+        box-shadow: inset 0 0 40px 10px rgba(83, 210, 44, 0.4);
+    }
+    .drag-over-invalid {
+        /* A red inset shadow for unsupported files */
+        box-shadow: inset 0 0 40px 10px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Add this to the <style> block in ALL 8 calculator files */
+
+main {
+    /* This makes the animation smooth */
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.page-exit {
+    /* This is the state we will animate to */
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+</style>
+<!-- END: Final Consolidated Styles -->
+ <!-- Add this to the <head> of all your calculator pages -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js" defer></script>
+</head>
+<body "bg-primary-50">
+<!-- NEW FROSTED GLASS HEADER -->
+<!-- START: Corrected Header -->
+<!-- === THIS IS THE FINAL HEADER FOR ALL AUTHENTICATED PAGES === -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        
+        <!-- Logo -->
+        <div class="flex items-center">
+            <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+            <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+        </div>
+        
+        <!-- Right Aligned Container: Nav + Account -->
+        <div class="hidden md:flex items-center">
+            <nav class="flex items-center space-x-8">
+                <!-- Update hrefs to point to the correct files -->
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html">Home</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html#about-us">About Us</a>
+            </nav>
+
+            <!-- Vertical Fade Line -->
+            <div class="w-px h-6 bg-gray-300 mx-6"></div>
+
+            <!-- User Icon links directly to profile page -->
+            <a href="user_profile.html">
+                <!-- 
+                  THIS 'id' IS THE CRITICAL PART. 
+                  It's how the JavaScript finds this specific element. 
+                -->
+                <div id="nav-user-icon">
+                    <!-- Default SVG Icon shows while the user's avatar is loading -->
+                    <svg alt="User Account" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg>
+                </div>
+            </a>
+        </div>
+    </div>
+</header>
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
+    <div class="mb-4 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-3xl font-bold text-primary-700 tracking-tight">
+    Scope 2 Emissions Calculator
+  </h2>
+</div>
+
+<!-- Location: The sub-navigation bar -->
+
+<nav class="flex justify-center py-4">
+  <div class="flex gap-3 rounded-full bg-white/30 backdrop-blur-sm shadow-lg px-4 py-3">
+    
+    <a href="electricity.html"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Purchased Electricity
+    </a>
+
+    <!-- Inactive Tabs (Unchanged from last step) -->
+    <a href="heating.html"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Purchased Heating
+    </a>
+
+    <!-- Active Tab (Now with Hover "Pop" Effect) -->
+    <a href="#purchased-cooling"
+      class="px-5 py-2 rounded-full text-black border border-[#53d22c] bg-[#53d22c]/20 backdrop-blur-md shadow 
+             transition-all duration-300 ease-out 
+             hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Purchased Cooling
+    </a>
+
+    <a href="steam.html"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Purchased Steam
+    </a>
+
+    <a href="#results"
+      class="px-5 py-2 rounded-full text-black border border-transparent 
+             transition-all duration-300 ease-out 
+             hover:bg-white/50 hover:backdrop-blur-md hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Results
+    </a>
+  </div>
+</nav>
+
+
+
+<div class="mt-8">
+<div class="relative rounded-lg overflow-hidden h-64">
+<img alt="Illustration of a modern cooling system" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJWLMeNTmng3_Cc5kEpEMxzKIdaiohMiPhv4Q8iSl2yWBtyswQwwtXnN0RLgfNwpgn2JBgOVOwYWqOaw3aN0FxK9ORZs4tDagvwZ4vG8zjK4L8VeJbPu_t2HVcZb2CVoMvJ5OaVAa-6tQmomsNZ-CW8dBuonl8iXKxBwHOQNcQZgEMih0oDbPhF82zmHlx-N01dY9l7U4LC6slsbSbKR9mTzmlm0j-G8W1eF9apXvj-jTO3NlpDya2EomfOKQd_T6_afPko8sPwaY"/>
+<div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+<p class="text-white text-center text-xl font-medium max-w-2xl">Calculate indirect emissions from purchased cooling.</p>
+</div>
+</div>
+</div>
+<div class="mt-8 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+<form action="#" method="POST">
+<!-- Glassmorphic Input Card -->
+<div class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6 animate-fade-in">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Reporting Month & Year -->
+    <div class="relative">
+      <label for="monthYearInput" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+        <span class="material-icons text-base">calendar_today</span>
+        Reporting Month & Year<span class="text-red-500 ml-1">*</span>
+      </label>
+      <input id="monthYearInput" name="monthYear" type="text" placeholder="MM/YYYY"
+        class="w-full rounded-lg border border-gray-300 px-4 py-3 pr-10 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green" />
+      <button type="button" id="togglePicker"
+        class="absolute right-3 top-[65%] transform -translate-y-1/2 flex items-center justify-center text-gray-500 hover:text-fern-green">
+        <span class="material-icons text-xl">calendar_today</span>
+      </button>
+      <div id="pickerDropdown"
+        class="absolute left-0 mt-2 w-full bg-white/50 backdrop-blur-xl rounded-xl shadow-xl border border-white/30 p-4 z-50 hidden">
+      </div>
+    </div>
+
+    <!-- Region or Grid -->
+    <div>
+      <label for="region" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+        <span class="material-icons text-base">public</span>
+        Region or Grid<span class="text-red-500 ml-1">*</span>
+      </label>
+      <select id="region" name="region"
+        class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+        <option value="">Select a region</option>
+        <option>North America</option>
+        <option>Europe</option>
+        <option>Asia-Pacific</option>
+        <option>South America</option>
+      </select>
+    </div>
+
+    <!-- Type of Cooling Purchased -->
+    <div>
+      <label for="cooling-type" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+        <span class="material-icons text-base">ac_unit</span>
+        Type of Cooling Purchased<span class="text-red-500 ml-1">*</span>
+      </label>
+      <select id="cooling-type" name="cooling-type"
+        class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+        <option value="">Select cooling type</option>
+        <option>District Cooling</option>
+        <option>Chilled Water</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <!-- Quantity -->
+    <div>
+      <label for="quantity" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+        <span class="material-icons text-base">straighten</span>
+        Quantity<span class="text-red-500 ml-1">*</span>
+      </label>
+      <input id="quantity" name="quantity" type="number" placeholder="e.g., 5000"
+        class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+    </div>
+
+    <!-- Unit of Measurement -->
+    <div>
+      <label for="unit" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+        <span class="material-icons text-base">scale</span>
+        Unit of Measurement<span class="text-red-500 ml-1">*</span>
+      </label>
+      <select id="unit" name="unit"
+        class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+        <option value="">Select a Unit</option>
+        <option>kWh</option>
+        <option>BTU</option>
+        <option>Tonnes of Refrigeration</option>
+        <option>MWh</option>
+        <option>GJ</option>
+      </select>
+    </div>
+
+    <!-- Emission Factor (Optional) -->
+    <div>
+      <label for="emission-factor" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+        <span class="material-icons text-base">speed</span>
+        Emission Factor [In kgCO2e/kWh] (optional)
+      </label>
+      <input id="emission-factor" name="emission-factor" type="text"
+        placeholder="Default: 0.055"
+        class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+      <p class="mt-1 text-xs text-gray-500">If left blank, a default emission factor based on your selected region will be used.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Spacing & Divider -->
+<div class="my-14">
+  <hr class="border-t border-white/20 mb-10">
+</div>
+
+<!-- Upload Document Section -->
+<div class="col-span-1 md:col-span-2 animate-fade-in">
+  <div id="uploadCard"
+    class="group relative bg-white/20 backdrop-blur-xl rounded-2xl shadow-[0_12px_32px_-4px_rgba(0,0,0,0.15)] border border-white/30 p-6 transition-all duration-300">
+
+    <!-- Optional Section Title -->
+    <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">
+      Extract Data From Document
+    </h3>
+
+    <!-- Dropzone -->
+    <div id="dropzone"
+      class="w-full flex flex-col items-center justify-center gap-4 px-6 py-10 border-2 border-dashed border-white/40 rounded-xl transition-all duration-300 hover:shadow-lg cursor-pointer text-center">
+      <span class="material-icons text-4xl text-[#53d22c]">upload_file</span>
+      <label for="fileInput"
+        class="px-6 py-2 rounded-full bg-white/30 text-black font-medium shadow-md hover:bg-white/40 hover:ring-2 hover:ring-[#53d22c]/50 transition cursor-pointer">
+        <span id="uploadLabel">Choose File</span>
+      </label>
+      <input type="file" id="fileInput" class="hidden" accept=".pdf,.csv,.xlsx,.jpg,.jpeg,.png" />
+      <p class="text-sm text-gray-600">Supported: PDF, XLSX, CSV, JPG, PNG</p>
+      <div id="filePreview"
+        class="hidden text-sm text-gray-800 mt-2 flex items-center gap-2 justify-center">
+        <span class="material-icons text-green-500">check_circle</span>
+        <span id="fileName" class="truncate max-w-xs"></span>
+        <button id="removeFile" type="button" class="text-gray-500 hover:text-red-500 transition">
+          <span class="material-icons text-sm">close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Toast -->
+<div id="toast"
+  class="fixed bottom-6 right-6 bg-white/90 backdrop-blur-md text-sm px-4 py-2 rounded shadow-lg hidden z-[100]">
+</div>
+
+<!-- Summary Section -->
+<div id="summarySection"
+     class="mt-14 bg-white/20 backdrop-blur-xl border border-white/30 rounded-2xl shadow-xl p-6 animate-fade-in">
+
+  <!-- Location: Inside the "Summary Section" -->
+
+<div class="flex justify-between items-center mb-4">
+    <h3 class="text-lg font-semibold text-gray-800">Summary of Entries</h3>
+    <div class="flex items-center gap-4">
+        <!-- The new "Delete Selected" button, initially hidden -->
+        <button id="deleteSelectedBtn" type="button" onclick="deleteSelectedRows()"
+                class="hidden text-sm text-red-500 font-medium px-4 py-1 rounded-full hover:bg-red-500/10 transition">
+            Delete Selected
+        </button>
+        <button id="exportCSV" type="button"
+                class="text-sm text-[#53d22c] font-medium px-4 py-1 rounded-full hover:bg-[#53d22c]/10 transition">
+            Export to CSV
+        </button>
+    </div>
+</div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left text-gray-800">
+      <thead class="text-xs text-gray-600 uppercase border-b border-white/20">
+        <tr>
+          <th class="p-3">
+            <input id="selectAll" type="checkbox"
+                   class="form-checkbox text-[#53d22c] rounded">
+          </th>
+          <th class="p-3">#</th>
+          <th class="p-3">Month/Year</th>
+          <th class="p-3">Region</th>
+          <th class="p-3">Cooling Type</th>
+          <th class="p-3">Quantity</th>
+          <th class="p-3">Unit</th>
+          <th class="p-3">Emission Factor</th>
+          <th class="p-3 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="summaryTableBody">
+        <!-- Dynamic rows will appear here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Glassmorphic CTA Pill Footer -->
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-[95%] max-w-[1200px] px-4 z-50">
+  <div class="flex justify-between items-center bg-white/10 rounded-full shadow-lg px-6 py-3 border border-white/20">
+    
+    <!-- Save Button -->
+    <button type="button" onclick="saveRow()"
+      class="px-6 py-2 rounded-full bg-white/30 text-black font-semibold shadow-lg border border-white/20 
+             hover:bg-white/40 active:scale-95 transition-all duration-300 ease-out backdrop-blur-sm 
+             hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+      Add to Table
+    </button>
+
+    <!-- Wrapper for the Next Button -->
+    <div id="nextBtnWrapper">
+      <!-- Added pointer-events-none to the button's default state -->
+      <button type="submit" id="nextBtn"
+        class="w-24 px-6 py-2 rounded-full bg-gray-400/20 text-black font-semibold shadow-lg border border-gray-400/30 
+               active:scale-95 transition-all duration-300 ease-out backdrop-blur-sm 
+               flex items-center justify-center pointer-events-none">
+        <span>Next</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+</form>
+
+</div>
+</main>
+
+<!-- Custom Confirmation Modal -->
+<div id="confirmationModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
+  <div class="bg-white/70 backdrop-blur-xl border border-white/30 rounded-2xl shadow-xl p-8 w-full max-w-md animate-fade-in-up">
+    <h3 id="modalTitle" class="text-xl font-bold text-gray-800 text-center mb-4">Confirm Action</h3>
+    <p id="modalMessage" class="text-center text-gray-700 mb-8">Are you sure you want to proceed?</p>
+    <div class="flex justify-center gap-4">
+      <button id="modalCancelBtn" class="px-6 py-2 rounded-full bg-gray-200/50 text-black font-semibold hover:bg-gray-300/60 transition">
+        Cancel
+      </button>
+      <button id="modalConfirmBtn" class="px-6 py-2 rounded-full bg-red-500 text-white font-semibold hover:bg-red-600 transition">
+        Confirm
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- All Scripts are Here -->
+
+<script>
+  const toggleBtn = document.getElementById("togglePicker");
+  const dropdown = document.getElementById("pickerDropdown");
+  const input = document.getElementById("monthYearInput");
+
+  const currentYear = new Date().getFullYear();
+  // Current year first (2025), then descending order (2024, 2023, 2022...)
+  const years = [currentYear];
+  for (let i = currentYear - 1; i >= currentYear - 9; i--) {
+    years.push(i);
+  }
+
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  let selectedYear = null;
+
+  toggleBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dropdown.classList.remove("hidden");
+    renderYearGrid();
+  });
+
+  function renderYearGrid() {
+    dropdown.innerHTML = ""; // clear previous content
+
+    const label = document.createElement("p");
+    label.className = "mb-3 font-semibold text-gray-700 text-center";
+    label.textContent = "Select Year:";
+    dropdown.appendChild(label);
+
+    const grid = document.createElement("div");
+    grid.className = "grid grid-cols-3 gap-2";
+    dropdown.appendChild(grid);
+
+    years.forEach((year, index) => {
+      const btn = document.createElement("button");
+      btn.type = "button"; // Explicitly set button type
+      
+      // Highlight current year with fern green
+      if (year === currentYear) {
+        btn.className = "px-3 py-2 w-full text-sm rounded-md bg-[#53d22c]/30 text-black font-semibold border-2 border-[#53d22c] hover:bg-[#53d22c]/40 shadow-lg transition transform hover:scale-105";
+      } else {
+        btn.className = "px-3 py-2 w-full text-sm rounded-md bg-white/40 text-black hover:bg-white/60 shadow transition transform hover:scale-105";
+      }
+      
+      btn.textContent = year;
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Year clicked:", year); // Debug log
+        selectedYear = year;
+        renderMonthGrid();
+      });
+      grid.appendChild(btn);
+    });
+  }
+
+  function renderMonthGrid() {
+    console.log("renderMonthGrid called for year:", selectedYear); // Debug log
+    dropdown.innerHTML = "";
+
+    const header = document.createElement("div");
+    header.className = "flex justify-between items-center mb-3";
+    header.innerHTML = `<span class="text-sm font-semibold text-gray-800">Select Month (${selectedYear})</span>
+      <button type="button" id="backToYears" class="text-sm text-gray-500 hover:text-black underline">← Back</button>`;
+    dropdown.appendChild(header);
+
+    // Add the event listener AFTER the element is created
+    document.getElementById("backToYears").addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      renderYearGrid();
+    });
+
+    const grid = document.createElement("div");
+    grid.className = "grid grid-cols-3 gap-2";
+    dropdown.appendChild(grid);
+
+    months.forEach((month, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button"; // Explicitly set button type
+      btn.className = "px-3 py-2 w-full text-sm rounded-md bg-white/40 text-black hover:bg-[#53d22c]/30 hover:scale-105 shadow transition";
+      btn.textContent = month.substring(0, 3); // Show abbreviated month names
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const mm = (i + 1).toString().padStart(2, "0");
+        input.value = `${mm}/${selectedYear}`;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        dropdown.classList.add("hidden");
+        
+        // Add a subtle success animation
+        input.classList.add("ring-2", "ring-[#53d22c]", "ring-opacity-50");
+        setTimeout(() => {
+          input.classList.remove("ring-2", "ring-[#53d22c]", "ring-opacity-50");
+        }, 1000);
+      });
+      grid.appendChild(btn);
+    });
+
+    // Clear button
+    const clear = document.createElement("button");
+    clear.type = "button"; // Explicitly set button type
+    clear.className = "text-sm text-gray-500 hover:text-red-500 underline mt-4 block mx-auto";
+    clear.textContent = "Clear Selection";
+    clear.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      input.value = "";
+      dropdown.classList.add("hidden");
+    });
+    dropdown.appendChild(clear);
+  }
+
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+      dropdown.classList.add("hidden");
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      dropdown.classList.add("hidden");
+    }
+  });
+
+  // MM/YYYY validation
+  input.addEventListener("blur", () => {
+    const val = input.value.trim();
+    const pattern = /^(0[1-9]|1[0-2])\/\d{4}$/;
+    if (val && !pattern.test(val)) {
+      input.classList.add("border-red-500");
+    } else {
+      input.classList.remove("border-red-500");
+    }
+  });
+</script>
+
+<script>
+  // --- NEW AND IMPROVED FILE UPLOAD LOGIC ---
+  const fileInput = document.getElementById('fileInput');
+  const dropzone = document.getElementById('dropzone');
+  const uploadLabel = document.getElementById('uploadLabel');
+  const filePreview = document.getElementById('filePreview');
+  const fileName = document.getElementById('fileName');
+  const removeFileBtn = document.getElementById('removeFile');
+  
+  // Define supported file types (MIME types)
+  const supportedTypes = [
+      'application/pdf', 
+      'text/csv', 
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // for .xlsx
+      'image/jpeg', 
+      'image/png'
+  ];
+
+  // Function to check if a file type is supported
+  function isFileTypeSupported(file) {
+    return file && supportedTypes.includes(file.type);
+  }
+
+  // Handle file selection from the input button
+  fileInput.addEventListener('change', () => handleFileSelect(fileInput.files[0]));
+
+  // Drag and drop event listeners
+  dropzone.addEventListener('dragenter', e => {
+    e.preventDefault();
+  });
+  
+  dropzone.addEventListener('dragover', e => {
+    e.preventDefault();
+    // Check the file type during drag-over to apply the correct glow
+    const file = e.dataTransfer.items && e.dataTransfer.items.length > 0 ? e.dataTransfer.items[0] : null;
+    if (file && isFileTypeSupported(file)) {
+        dropzone.classList.add('drag-over-valid');
+        dropzone.classList.remove('drag-over-invalid');
+    } else {
+        dropzone.classList.add('drag-over-invalid');
+        dropzone.classList.remove('drag-over-valid');
+    }
+  });
+
+  dropzone.addEventListener('dragleave', e => {
+    e.preventDefault();
+    // Remove glow effect when cursor leaves
+    dropzone.classList.remove('drag-over-valid', 'drag-over-invalid');
+  });
+
+  dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    // Remove glow effect on drop
+    dropzone.classList.remove('drag-over-valid', 'drag-over-invalid');
+    
+    const file = e.dataTransfer.files && e.dataTransfer.files.length > 0 ? e.dataTransfer.files[0] : null;
+
+    if (isFileTypeSupported(file)) {
+      // If the file is valid, process it
+      fileInput.files = e.dataTransfer.files; // Assign file to the hidden input
+      handleFileSelect(file);
+    } else {
+      // If the file is not valid, show an error and do nothing else
+      showToast('File type not supported. ❌', 'error');
+    }
+  });
+
+  // Main function to handle the selected file
+  function handleFileSelect(file) {
+    if (file) {
+      filePreview.classList.remove('hidden');
+      fileName.textContent = file.name;
+      uploadLabel.textContent = 'Replace File';
+      showToast('File uploaded successfully ✅', 'success');
+    } else {
+      clearFile();
+    }
+  }
+
+  // Event listener for the remove file button
+  removeFileBtn.addEventListener('click', () => {
+    clearFile();
+    showToast('File removed', 'success');
+  });
+
+  // Helper function to clear the file input
+  function clearFile() {
+    fileInput.value = '';
+    filePreview.classList.add('hidden');
+    fileName.textContent = '';
+    uploadLabel.textContent = 'Choose File';
+  }
+</script>
+
+<script>
+// --- START OF COMPLETE AND FINAL MAIN SCRIPT ---
+
+// --- Global Variables & Constants ---
+const allFormFields = ['monthYearInput', 'region', 'cooling-type', 'quantity', 'unit', 'emission-factor'];
+const requiredFields = ['monthYearInput', 'region', 'cooling-type', 'quantity', 'unit'];
+let summaryData = [];
+let editIndex = -1;
+
+// --- DOM Element References ---
+const summaryTableBody = document.getElementById('summaryTableBody');
+const exportCSVBtn = document.getElementById('exportCSV');
+const selectAll = document.getElementById('selectAll');
+const nextBtn = document.getElementById('nextBtn');
+const nextBtnWrapper = document.getElementById('nextBtnWrapper');
+const toast = document.getElementById('toast');
+
+// --- Custom Confirmation Modal Function ---
+function showConfirmationModal(title, message) {
+  const modal = document.getElementById('confirmationModal');
+  const titleEl = document.getElementById('modalTitle');
+  const messageEl = document.getElementById('modalMessage');
+  const confirmBtn = document.getElementById('modalConfirmBtn');
+  const cancelBtn = document.getElementById('modalCancelBtn');
+
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  modal.classList.remove('hidden');
+
+  return new Promise((resolve) => {
+    confirmBtn.onclick = () => {
+      modal.classList.add('hidden');
+      resolve(true);
+    };
+    cancelBtn.onclick = () => {
+      modal.classList.add('hidden');
+      resolve(false);
+    };
+  });
+}
+
+// --- Core Form & UI Functions ---
+function showToast(message, type = 'success') {
+  toast.textContent = message;
+  toast.classList.remove('hidden', 'text-green-700', 'text-red-700', 'border-red-200');
+  if (type === 'error') {
+    toast.classList.add('text-red-700', 'border', 'border-red-200');
+  } else {
+    toast.classList.add('text-green-700');
+  }
+  requestAnimationFrame(() => {
+    toast.classList.remove('hidden');
+  });
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 3000);
+}
+
+function clearValidationError(field) {
+  field.classList.remove('border-red-500', 'animate-shake');
+}
+
+function validateForm() {
+  let isValid = true;
+  requiredFields.forEach(id => {
+    const field = document.getElementById(id);
+    field.classList.remove('animate-shake');
+    if (!field.value) {
+      isValid = false;
+      field.classList.add('border-red-500');
+      setTimeout(() => field.classList.add('animate-shake'), 50);
+    } else {
+      clearValidationError(field);
+    }
+  });
+  if (!isValid) {
+    showToast('Please fill in all required fields marked with *', 'error');
+  }
+  return isValid;
+}
+
+function clearForm() {
+  allFormFields.forEach(id => {
+    const field = document.getElementById(id);
+    if (field.tagName === 'SELECT') {
+      field.selectedIndex = 0;
+    } else {
+      field.value = '';
+    }
+    clearValidationError(field);
+  });
+}
+
+function saveRow() {
+  if (!validateForm()) return;
+  const row = {
+    month: document.getElementById('monthYearInput').value,
+    region: document.getElementById('region').value,
+    type: document.getElementById('cooling-type').value,
+    quantity: document.getElementById('quantity').value,
+    unit: document.getElementById('unit').value,
+    factor: document.getElementById('emission-factor').value.trim() || '0.055'
+  };
+  summaryData.push(row);
+  showToast('Entry saved successfully ✅', 'success');
+  clearForm();
+  renderSummaryTable();
+}
+
+// --- Summary Table & CRUD Functions (with CORRECTED Fade-to-Dust) ---
+
+async function deleteRow(index) {
+  const isConfirmed = await showConfirmationModal('Delete Entry?', `Are you sure you want to delete row #${index + 1}?`);
+  if (!isConfirmed) return;
+
+  const rowElement = document.querySelector(`#summaryTableBody tr[data-index="${index}"]`);
+  if (rowElement) {
+    // THE FIX: Remove the old animation class before adding the new one.
+    rowElement.classList.remove('animate-fade-in-row');
+    rowElement.classList.add('fade-to-dust-animation');
+  }
+
+  setTimeout(() => {
+    summaryData.splice(index, 1);
+    showToast(`Row #${index + 1} deleted.`, 'success');
+    renderSummaryTable();
+  }, 600);
+}
+
+async function deleteSelectedRows() {
+    const checkedBoxes = document.querySelectorAll('.rowCheckbox:checked');
+    if (checkedBoxes.length === 0) {
+        showToast('No rows selected to delete.', 'error');
+        return;
+    }
+    
+    const isConfirmed = await showConfirmationModal('Delete Selected?', `Are you sure you want to delete these ${checkedBoxes.length} entries?`);
+    if (!isConfirmed) return;
+
+    const indicesToDelete = [];
+    checkedBoxes.forEach(box => {
+        const index = parseInt(box.dataset.index);
+        indicesToDelete.push(index);
+        const rowElement = document.querySelector(`#summaryTableBody tr[data-index="${index}"]`);
+        if (rowElement) {
+            // THE FIX: Remove the old animation class before adding the new one.
+            rowElement.classList.remove('animate-fade-in-row');
+            rowElement.classList.add('fade-to-dust-animation');
+        }
+    });
+
+    setTimeout(() => {
+        indicesToDelete.sort((a, b) => b - a);
+        indicesToDelete.forEach(index => {
+            summaryData.splice(index, 1);
+        });
+        showToast(`${indicesToDelete.length} rows deleted.`, 'success');
+        renderSummaryTable();
+    }, 600);
+}
+
+function editInlineRow(index) { editIndex = index; renderSummaryTable(); }
+function cancelInlineEdit() { editIndex = -1; renderSummaryTable(); }
+function saveInlineEdit(index) {
+  const updatedRow = {
+    month: document.getElementById('edit-month').value, region: document.getElementById('edit-region').value,
+    type: document.getElementById('edit-type').value, quantity: document.getElementById('edit-qty').value,
+    unit: document.getElementById('edit-unit').value, factor: document.getElementById('edit-factor').value || '0.055'
+  };
+  summaryData[index] = updatedRow;
+  editIndex = -1;
+  showToast(`Row ${index + 1} updated.`, 'success');
+  renderSummaryTable();
+}
+
+function renderSummaryTable() {
+  summaryTableBody.innerHTML = '';
+  if (summaryData.length === 0) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `
+      <td colspan="9" class="text-center py-12">
+        <div class="flex flex-col items-center gap-2 text-gray-500">
+          <span class="material-icons text-4xl">inventory_2</span>
+          <p class="font-semibold">No entries yet</p>
+          <p class="text-sm">Use the form above to add your first entry.</p>
+        </div>
+      </td>
+    `;
+    summaryTableBody.appendChild(emptyRow);
+  } else {
+    summaryData.forEach((row, index) => {
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-index', index);
+      tr.className = 'animate-fade-in-row';
+      if (editIndex === index) {
+         tr.innerHTML = `
+          <td class="p-3 text-center align-middle"><span class="material-icons text-base text-gray-400">edit</span></td>
+          <td class="p-3 align-middle">${index + 1}</td>
+          <td class="p-3"><input type="text" id="edit-month" class="w-full text-sm px-2 py-1 rounded border border-fern-green bg-white/50" value="${row.month}"></td>
+          <td class="p-3"><select id="edit-region" class="w-full text-sm px-2 py-1 rounded border border-fern-green bg-white/50"><option ${row.region==='North America' ? 'selected' :''}>North America</option><option ${row.region==='Europe' ? 'selected' :''}>Europe</option><option ${row.region==='Asia-Pacific' ?'selected' :''}>Asia-Pacific</option><option ${row.region==='South America' ? 'selected' :''}>South America</option></select></td>
+          <td class="p-3"><select id="edit-type" class="w-full text-sm px-2 py-1 rounded border border-fern-green bg-white/50"><option ${row.type==='District Cooling' ? 'selected' :''}>District Cooling</option><option ${row.type==='Chilled Water' ? 'selected' :''}>Chilled Water</option><option ${row.type==='Other' ? 'selected' :''}>Other</option></select></td>
+          <td class="p-3"><input type="number" id="edit-qty" class="w-full text-sm px-2 py-1 rounded border border-fern-green bg-white/50" value="${row.quantity}"></td>
+          <td class="p-3"><select id="edit-unit" class="w-full text-sm px-2 py-1 rounded border border-fern-green bg-white/50"><option ${row.unit==='kWh' ? 'selected' :''}>kWh</option><option ${row.unit==='BTU' ? 'selected' :''}>BTU</option><option ${row.unit==='Tonnes of Refrigeration' ?'selected' :''}>Tonnes of Refrigeration</option><option ${row.unit==='MWh' ? 'selected' :''}>MWh</option><option ${row.unit==='GJ' ? 'selected' :''}>GJ</option></select></td>
+          <td class="p-3"><input type="text" id="edit-factor" class="w-full text-sm px-2 py-1 rounded border border-fern-green bg-white/50" value="${row.factor}"></td>
+          <td class="p-3 text-right space-x-2 align-middle">
+            <button type="button" onclick="saveInlineEdit(${index})" class="text-green-600 hover:text-green-800 transition transform hover:scale-125" title="Save">✅</button>
+            <button type="button" onclick="cancelInlineEdit()" class="text-gray-500 hover:text-red-500 transition transform hover:scale-125" title="Cancel">❌</button>
+          </td>`;
+      } else {
+        tr.innerHTML = `
+          <td class="p-3 text-center align-middle"><input type="checkbox" class="rowCheckbox form-checkbox text-[#53d22c] rounded focus:ring-0" data-index="${index}"></td>
+          <td class="p-3 align-middle">${index + 1}</td><td class="p-3 align-middle">${row.month}</td><td class="p-3 align-middle">${row.region}</td>
+          <td class="p-3 align-middle">${row.type}</td><td class="p-3 align-middle">${row.quantity}</td><td class="p-3 align-middle">${row.unit}</td>
+          <td class="p-3 align-middle">${row.factor}</td>
+          <td class="p-3 text-right space-x-2 align-middle">
+            <button type="button" onclick="editInlineRow(${index})" class="text-gray-500 hover:text-[#53d22c] transition" title="Edit"><span class="material-icons text-base">edit</span></button>
+            <button type="button" onclick="deleteRow(${index})" class="text-gray-500 hover:text-red-500 transition" title="Delete"><span class="material-icons text-base">delete</span></button>
+          </td>`;
+      }
+      summaryTableBody.appendChild(tr);
+    });
+  }
+  updateNextButtonState();
+  updateBulkActionButtons();
+}
+
+// --- UI State Management ---
+function updateNextButtonState() {
+  const hasData = summaryData.length > 0;
+  nextBtn.disabled = !hasData;
+  nextBtnWrapper.classList.toggle('cursor-not-allowed', !hasData);
+
+  if (hasData) {
+    // When button is ACTIVE (green):
+    // 1. Remove disabled styles
+    nextBtn.classList.remove('bg-gray-400/20', 'border-gray-400/30', 'pointer-events-none');
+    
+    // 2. Add active styles AND the pop/press effects
+    nextBtn.classList.add(
+        'bg-[#53d22c]/20', 
+        'border-[#53d22c]/30',
+        'hover:shadow-xl', 
+        'hover:-translate-y-1', 
+        'hover:scale-105'
+    );
+  } else {
+    // When button is DISABLED (gray):
+    // 1. Add disabled styles
+    nextBtn.classList.add('bg-gray-400/20', 'border-gray-400/30', 'pointer-events-none');
+    
+    // 2. REMOVE active styles AND the pop/press effects
+    nextBtn.classList.remove(
+        'bg-[#53d22c]/20', 
+        'border-[#53d22c]/30',
+        'hover:shadow-xl', 
+        'hover:-translate-y-1', 
+        'hover:scale-105'
+    );
+  }
+}
+
+function updateBulkActionButtons() {
+    const checkedBoxes = document.querySelectorAll('.rowCheckbox:checked').length;
+    const deleteBtn = document.getElementById('deleteSelectedBtn');
+    if (deleteBtn) {
+        deleteBtn.classList.toggle('hidden', checkedBoxes === 0);
+    }
+}
+
+// --- Event Listeners ---
+requiredFields.forEach(id => {
+  const field = document.getElementById(id);
+  field.addEventListener('input', () => clearValidationError(field));
+  field.addEventListener('change', () => clearValidationError(field));
+});
+
+// THIS IS THE NEW, CORRECTED CODE
+// In cooling.html
+
+nextBtnWrapper.addEventListener('click', async (event) => {
+    event.preventDefault(); 
+
+    if (summaryData.length === 0) { /* ... */ return; }
+    
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) { /* ... */ return; }
+
+    const dataToInsert = summaryData.map(row => ({
+        user_id: user.id,
+        category: 'cooling', 
+        form_data: row 
+    }));
+
+    const { error } = await supabaseClient.from('emissions_data').insert(dataToInsert);
+    
+    if (error) {
+        showToast('Error saving data: ' + error.message, 'error');
+    } else {
+        // --- THE FIX ---
+        summaryData = [];
+        localStorage.removeItem('scope2_cooling');
+
+        showToast('Progress saved!', 'success');
+        
+        const mainElement = document.querySelector('main');
+        mainElement.classList.add('page-exit');
+        setTimeout(() => {
+            window.location.href = 'steam.html';
+        }, 200);
+    }
+});
+
+selectAll.addEventListener('change', () => {
+  document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = selectAll.checked);
+  updateBulkActionButtons();
+});
+
+summaryTableBody.addEventListener('change', e => {
+    if (e.target.classList.contains('rowCheckbox')) {
+        updateBulkActionButtons();
+    }
+});
+
+exportCSVBtn.addEventListener('click', () => { if(summaryData.length===0) {showToast("No data to export.", "error"); return;} const h=['Month/Year', 'Region', 'Cooling Type', 'Quantity', 'Unit', 'Emission Factor']; const r=summaryData.map(row=>[row.month,row.region,row.type,row.quantity,row.unit,row.factor]); const c=[h,...r].map(e=>e.map(cell=>`"${(cell??'').toString().replace(/"/g,'""')}"`).join(',')).join('\n'); const b=new Blob([c],{type:'text/csv;charset=utf-8;'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download='leafcalc_cooling_summary.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u); });
+
+// --- Initial Setup ---
+renderSummaryTable();
+
+// --- END OF SCRIPT ---
+</script>
+
+<script>
+    // This is the complete script for protecting pages and loading the avatar.
+    async function checkAndLoadUser() {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) {
+           // CORRECT PATH
+window.location.replace('../Login/Signin.html'); 
+            return;
+        }
+        const avatarUrl = user.user_metadata?.avatar_url;
+        const navUserIcon = document.getElementById('nav-user-icon');
+        if (avatarUrl && navUserIcon) {
+            navUserIcon.innerHTML = `<img src="${avatarUrl}" ...>`;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', checkAndLoadUser);  
+</script>
+
+</body></html>

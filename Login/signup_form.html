@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>LeafCalc - Create Account</title>
+    <link rel="icon" type="image/png" href="../Logos/Leafcalc Fevicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <style type="text/tailwindcss">
+        :root {
+            --fern-green: #53d22c;
+            --fern-green-darker: #46b024;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .form-input {
+            @apply block w-full rounded-lg border-gray-300 bg-white/30 shadow-inner px-4 py-3 transition duration-200 ease-in-out;
+        }
+        .form-input:focus {
+            @apply border-[var(--fern-green)] ring-2 ring-[var(--fern-green)] ring-opacity-50;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-30px) translateX(15px); }
+            100% { transform: translateY(0px) translateX(0px); }
+        }
+        @keyframes float-2 {
+            0% { transform: translateY(0px) translateX(0px) scale(1); }
+            50% { transform: translateY(25px) translateX(-20px) scale(1.05); }
+            100% { transform: translateY(0px) translateX(0px) scale(1); }
+        }
+        .animate-float {
+            animation: float 12s ease-in-out infinite;
+        }
+        .animate-float-2 {
+            animation: float-2 15s ease-in-out infinite;
+        }
+        /* NEW: Styles for the animated eye icon */
+        .eye-icon .eye-open-path,
+        .eye-icon .eye-closed-path {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .eye-icon .eye-closed-path {
+            opacity: 0;
+            transform: rotate(-30deg) scale(0.8);
+            transform-origin: center;
+        }
+        .eye-icon.is-open .eye-open-path {
+            opacity: 0;
+            transform: rotate(30deg) scale(0.8);
+        }
+        .eye-icon.is-open .eye-closed-path {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+    </style>
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../supabase-client.js" defer></script>
+</head>
+<body class="antialiased text-gray-800">
+<div class="min-h-screen lg:grid lg:grid-cols-12">
+    <div class="lg:col-span-4 bg-gray-800 flex flex-col justify-center items-center p-8 lg:p-12 text-white shadow-lg relative overflow-hidden">
+        <div class="absolute top-[-10%] left-[-15%] w-96 h-96 bg-[#53d22c]/30 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute bottom-[-15%] right-[-15%] w-[28rem] h-[28rem] bg-[#53d22c]/20 rounded-full blur-3xl animate-float-2"></div>
+        <div class="text-center z-10">
+            <span class="material-icons text-6xl text-[var(--fern-green)] mb-4">eco</span>
+            <h1 class="text-4xl font-bold">LeafCalc</h1>
+            <p class="mt-4 text-lg text-gray-300">Measure. Manage. Make a Difference.</p>
+        </div>
+    </div>
+    
+    <div class="lg:col-span-8 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-28">
+        <!-- MODIFIED: Wrapped in glassmorphic card -->
+        <div class="w-full max-w-lg mx-auto lg:mx-0 bg-white/60 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8">
+            <div class="text-left mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">Tell us about yourself</h2>
+                <p class="mt-2 text-base text-gray-600">
+                    Join us in making a positive impact on the planet.
+                </p>
+            </div>
+            <form action="#" class="space-y-6" method="POST">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700" for="full-name">Full Name</label>
+                        <div class="mt-1">
+                            <input class="form-input" id="full-name" name="full-name" placeholder="John Doe" required type="text"/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700" for="email">Email Address</label>
+                        <div class="mt-1">
+                            <input autocomplete="email" class="form-input" id="email" name="email" placeholder="you@example.com" required type="email"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700" for="company">Company Name</label>
+                        <div class="mt-1">
+                            <input class="form-input" id="company" name="company" placeholder="GreenTech Inc." type="text"/>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700" for="industry">Industry</label>
+                        <select class="form-input mt-1" id="industry" name="industry">
+                            <option>Select an industry</option>
+                            <option>Technology</option>
+                            <option>Finance</option>
+                            <option>Healthcare</option>
+                            <option>Manufacturing</option>
+                            <option>Retail</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700" for="password">Create Password</label>
+                    <div class="mt-1 relative">
+                        <input class="form-input pr-12" id="password" name="password" placeholder="••••••••" required type="password"/>
+                        <!-- NEW: Toggle Button -->
+                         <button type="button" onclick="togglePasswordVisibility('password', this)" class="absolute inset-y-0 right-0 flex items-center justify-center h-full w-12 text-gray-400 hover:text-[var(--fern-green)]">
+                            <span class="sr-only">Toggle password visibility</span>
+                            <svg class="eye-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                               <path class="eye-open-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                               <path class="eye-open-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S3.732 16.057 2.458 12z" />
+                               <path class="eye-closed-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 011.671-3.007M9.88 9.88l4.24-4.24M3 3l18 18" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-base font-semibold text-white bg-[var(--fern-green)] hover:bg-[var(--fern-green-darker)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--fern-green)] transition-all duration-300 hover:shadow-xl hover:-translate-y-1" type="submit">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+            <div class="mt-8 text-center">
+                <p class="text-sm text-gray-600">
+                    Already have an account?
+                    <a class="font-medium text-[var(--fern-green)] hover:text-[var(--fern-green-darker)]" href="#">
+                        Sign in
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- NEW: Reusable Javascript function -->
+<script>
+    function togglePasswordVisibility(inputId, buttonEl) {
+        const input = document.getElementById(inputId);
+        const icon = buttonEl.querySelector('.eye-icon');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.add("is-open");
+        } else {
+            input.type = "password";
+            icon.classList.remove("is-open");
+        }
+    }
+
+    // Add ALL of the following code inside the script tag in signup_form.html, after the toggle function.
+
+const profileForm = document.querySelector('form');
+
+// Function to check if a user is actually logged in.
+// If not, it redirects them away, protecting this page.
+async function checkUser() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+        // If no one is logged in, send them to the sign-in page.
+        alert("You need to be logged in to complete your profile.");
+        window.location.href = "Signin.html";
+    }
+}
+
+// Run the check as soon as the page loads
+checkUser();
+
+
+// Now, handle the form submission
+profileForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const fullName = document.getElementById('full-name').value;
+    const company = document.getElementById('company').value;
+    const industry = document.getElementById('industry').value;
+
+    // We use the 'updateUser' function to add the new details
+    // to the already logged-in user.
+    const { data, error } = await supabaseClient.auth.updateUser({
+        data: {
+            full_name: fullName,
+            company_name: company,
+            industry: industry
+        }
+    });
+
+    if (error) {
+        alert('Error updating profile: ' + error.message);
+    } else {
+        alert('Profile complete! Welcome to LeafCalc.');
+        // Now that the profile is complete, send them to the main page.
+        window.location.href = 'landingpage_after_signup.html';
+    }
+});
+</script>
+</body>
+</html>
