@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Plans - LeafCalc</title>
+    <link rel="icon" type="image/png" href="../Logos/Leafcalc Fevicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <style type="text/tailwindcss">
+        :root {
+            --fern-green: #53d22c;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        /* Keyframe animations */
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 0.7s ease-out forwards;
+        }
+        /* Custom styles for the FAQ accordion */
+        details > summary {
+            list-style: none; /* Hide the default marker */
+        }
+        details > summary::-webkit-details-marker {
+            display: none; /* Hide the default marker in Safari */
+        }
+        details summary .icon {
+            transition: transform 0.3s ease-out;
+        }
+        details[open] summary .icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Glassmorphic Header (No Account Icon) -->
+    <header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <a href="landingpage_after_signup.html" class="flex items-center">
+                     <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+                    <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+                </a>
+            </div>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html">Home</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="contact.html">Contact</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="policies.html">Policies</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">Find the Perfect Plan</h1>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-500">Start for free, then scale as your sustainability goals grow. No hidden fees, cancel anytime.</p>
+            </div>
+
+            <!-- Pricing Tiers Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+
+                <!-- Basic Plan -->
+                <div class="animate-fade-in-up bg-white/50 backdrop-blur-xl border border-white/30 rounded-2xl shadow-xl p-8 h-full flex flex-col">
+                    <h3 class="text-2xl font-bold text-gray-800">Basic</h3>
+                    <p class="mt-2 text-gray-500 text-sm">For individuals & small teams getting started.</p>
+                    <div class="mt-6">
+                        <span class="text-5xl font-extrabold text-gray-900">Free</span>
+                    </div>
+                    <a href="#" class="mt-8 block w-full text-center rounded-full px-6 py-3 text-base font-semibold text-white bg-[#53d22c] shadow-md hover:bg-[#47b324] transition">Get Started</a>
+                    <ul class="mt-8 space-y-4 text-sm text-gray-600 flex-grow">
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Scope 1 & 2 Calculation</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>5 Calculations / Month</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Community Support</li>
+                    </ul>
+                </div>
+
+                <!-- Advanced Plan (Most Popular) -->
+                <div class="animate-fade-in-up relative bg-white/60 backdrop-blur-xl border-2 border-[#53d22c] rounded-2xl shadow-2xl p-8 h-full flex flex-col transform lg:scale-105" style="animation-delay: 0.1s;">
+                    <div class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                        <span class="inline-block px-4 py-1 text-xs font-semibold tracking-wider uppercase bg-[#53d22c] text-white rounded-full">Most Popular</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">Advanced</h3>
+                    <p class="mt-2 text-gray-500 text-sm">For growing businesses serious about tracking all emissions.</p>
+                    <div class="mt-6">
+                        <span class="text-5xl font-extrabold text-gray-900">$250</span>
+                        <span class="text-base font-medium text-gray-500">/ month</span>
+                    </div>
+                    <a href="#" class="mt-8 block w-full text-center rounded-full px-6 py-3 text-base font-semibold text-white bg-[#53d22c] shadow-md hover:bg-[#47b324] transition">Choose Plan</a>
+                    <ul class="mt-8 space-y-4 text-sm text-gray-600 flex-grow">
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span><b>Everything in Basic, plus:</b></li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Full Scope 1 & 2 Access</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Scope 3 Calculation (10/month)</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Limited AI Insights</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Priority Email Support</li>
+                    </ul>
+                </div>
+
+                <!-- Professional Plan -->
+                <div class="animate-fade-in-up bg-white/50 backdrop-blur-xl border border-white/30 rounded-2xl shadow-xl p-8 h-full flex flex-col" style="animation-delay: 0.2s;">
+                    <h3 class="text-2xl font-bold text-gray-800">Professional</h3>
+                    <p class="mt-2 text-gray-500 text-sm">For established companies needing comprehensive tools.</p>
+                    <div class="mt-6">
+                        <span class="text-5xl font-extrabold text-gray-900">$500</span>
+                        <span class="text-base font-medium text-gray-500">/ month</span>
+                    </div>
+                    <a href="#" class="mt-8 block w-full text-center rounded-full px-6 py-3 text-base font-semibold text-white bg-[#53d22c] shadow-md hover:bg-[#47b324] transition">Choose Plan</a>
+                    <ul class="mt-8 space-y-4 text-sm text-gray-600 flex-grow">
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span><b>Everything in Advanced, plus:</b></li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Full Scope 3 Access</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Full AI-Powered Features</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Advanced Reporting & Analytics</li>
+                        <li class="flex items-center"><span class="material-icons text-green-500 mr-2">check</span>Dedicated Support Channel</li>
+                    </ul>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="animate-fade-in-up bg-gray-800 text-white rounded-2xl shadow-xl p-8 h-full flex flex-col" style="animation-delay: 0.3s;">
+                    <h3 class="text-2xl font-bold">Enterprise</h3>
+                    <p class="mt-2 text-gray-400 text-sm">Custom solutions for large-scale organizations.</p>
+                    <div class="mt-6">
+                        <span class="text-4xl font-extrabold">Custom</span>
+                    </div>
+                    <a href="contact.html" class="mt-8 block w-full text-center rounded-full px-6 py-3 text-base font-semibold bg-white text-gray-800 shadow-md hover:bg-gray-200 transition">Contact Sales</a>
+                     <ul class="mt-8 space-y-4 text-sm text-gray-300 flex-grow">
+                        <li class="flex items-center"><span class="material-icons text-green-400 mr-2">check</span><b>Everything in Professional, plus:</b></li>
+                        <li class="flex items-center"><span class="material-icons text-green-400 mr-2">check</span>Custom Integrations</li>
+                        <li class="flex items-center"><span class="material-icons text-green-400 mr-2">check</span>API Access</li>
+                        <li class="flex items-center"><span class="material-icons text-green-400 mr-2">check</span>Dedicated Account Manager</li>
+                        <li class="flex items-center"><span class="material-icons text-green-400 mr-2">check</span>Service Level Agreement (SLA)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature Comparison Table -->
+            <div class="mt-24">
+                <h2 class="text-3xl font-extrabold text-gray-800 text-center">Compare All Features</h2>
+                <div class="mt-8 flow-root">
+                    <div class="overflow-x-auto rounded-lg shadow-md">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Feature</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Basic</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Advanced</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Professional</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Enterprise</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr class="bg-gray-50"><td colspan="5" class="px-6 py-2 text-sm font-semibold text-gray-700">Core Calculation</td></tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Scope 1 & 2</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">5 / month</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Scope 3</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">10 / month</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                </tr>
+
+                                <tr class="bg-gray-50"><td colspan="5" class="px-6 py-2 text-sm font-semibold text-gray-700">AI & Analytics</td></tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">AI Insights</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">Limited</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                </tr>
+                                 <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Advanced Reporting</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                </tr>
+                                
+                                <tr class="bg-gray-50"><td colspan="5" class="px-6 py-2 text-sm font-semibold text-gray-700">Support & Services</td></tr>
+                                 <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Dedicated Account Manager</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                </tr>
+                                 <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">API Access</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-red-500">cancel</span></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"><span class="material-icons text-green-500">check_circle</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="mt-24 max-w-3xl mx-auto">
+                <h2 class="text-3xl font-extrabold text-gray-800 text-center">Frequently Asked Questions</h2>
+                <div class="mt-8 space-y-4">
+                    <details class="bg-white/50 backdrop-blur-lg p-6 rounded-xl shadow-md border border-white/30">
+                        <summary class="font-semibold text-gray-800 cursor-pointer flex justify-between items-center">
+                            Can I change my plan later?
+                            <span class="material-icons icon">expand_more</span>
+                        </summary>
+                        <p class="mt-4 text-gray-600">Absolutely! You can upgrade, downgrade, or cancel your plan at any time from your account dashboard. Changes will be prorated or take effect at the end of the current billing cycle.</p>
+                    </details>
+                    <details class="bg-white/50 backdrop-blur-lg p-6 rounded-xl shadow-md border border-white/30">
+                        <summary class="font-semibold text-gray-800 cursor-pointer flex justify-between items-center">
+                            Do you offer discounts for annual billing?
+                            <span class="material-icons icon">expand_more</span>
+                        </summary>
+                        <p class="mt-4 text-gray-600">Yes, we offer a discount equivalent to two months free for customers who choose to pay annually. You can select this option during the checkout process.</p>
+                    </details>
+                    <details class="bg-white/50 backdrop-blur-lg p-6 rounded-xl shadow-md border border-white/30">
+                        <summary class="font-semibold text-gray-800 cursor-pointer flex justify-between items-center">
+                            What counts as one "calculation"?
+                            <span class="material-icons icon">expand_more</span>
+                        </summary>
+                        <p class="mt-4 text-gray-600">One calculation refers to a single, complete emissions report generated for a specific time period (e.g., a monthly report for a facility). The Basic plan allows you to generate up to 5 of these reports per month.</p>
+                    </details>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

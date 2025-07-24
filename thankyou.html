@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Thank You - LeafCalc</title>
+    <link rel="icon" type="image/png" href="../Logos/Leafcalc Fevicon.png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style type="text/tailwindcss">
+        :root {
+            --fern-green: #53d22c;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        .text-fern-green {
+            color: var(--fern-green);
+        }
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-fade-in-up { animation: fade-in-up 0.6s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-primary-50">
+
+<!-- *** MODIFIED HEADER (No User Icon) *** -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+            <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+        </div>
+        <!-- Right Aligned Container: Nav Only -->
+        <div class="hidden md:flex items-center">
+            <nav class="flex items-center space-x-8">
+                 <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html">Home</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html#about-us">About Us</a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main class="flex items-center justify-center h-screen">
+    <div class="text-center max-w-lg mx-auto bg-white/30 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl p-8 md:p-16 animate-fade-in-up">
+        <span class="material-icons text-7xl text-fern-green">check_circle_outline</span>
+        <h1 class="text-4xl font-bold text-gray-800 mt-4">Thank You!</h1>
+        <p class="text-gray-600 mt-4">Your investment has been successfully processed. We are incredibly grateful for your support and partnership. Welcome to the LeafCalc team!</p>
+        <div class="mt-8">
+             <button id="downloadReceiptBtn" class="px-8 py-3 rounded-full bg-[#53d22c]/80 text-white font-semibold shadow-lg hover:bg-[#53d22c] transition-all flex items-center justify-center mx-auto gap-2">
+                <span class="material-icons">download</span>
+                Download Receipt
+            </button>
+        </div>
+    </div>
+</main>
+
+<div class="hidden">
+    <div id="receipt-content" class="p-12 font-sans bg-white text-gray-800" style="width: 800px;">
+        <div class="flex justify-between items-center border-b pb-6">
+            <div class="flex items-center">
+                <span class="material-icons text-5xl text-[#53d22c]">eco</span>
+                <span class="text-3xl font-bold ml-2 text-gray-800">LeafCalc</span>
+            </div>
+            <div class="text-right">
+                <h2 class="text-3xl font-bold uppercase">Official Receipt</h2>
+                <p class="text-sm text-gray-500">Transaction ID: <span id="receipt-tid"></span></p>
+                <p class="text-sm text-gray-500">Date: <span id="receipt-date"></span></p>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-12 mt-8">
+            <div>
+                <h3 class="font-semibold text-gray-500 uppercase mb-2">From</h3>
+                <p class="font-bold">Valued Investor</p>
+                <p>Investor Account #...XXX-XX-1234</p>
+            </div>
+            <div class="text-right">
+                <h3 class="font-semibold text-gray-500 uppercase mb-2">To</h3>
+                <p class="font-bold">LeafCalc, Inc.</p>
+                <p>Corporate Account #...XXX-XX-5678</p>
+            </div>
+        </div>
+        <div class="mt-12">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="p-4 font-semibold">Description</th>
+                        <th class="p-4 font-semibold text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="p-4 border-b">Investment in LeafCalc</td>
+                        <td id="receipt-amount" class="p-4 border-b text-right font-mono"></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="p-4 text-right font-bold text-xl">Total Paid</th>
+                        <th id="receipt-total" class="p-4 text-right font-bold font-mono text-xl"></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="mt-12 border-t pt-8">
+            <p class="text-lg font-semibold text-center text-gray-800 mb-10">Thank you for your investment and for believing in our vision.</p>
+            <div class="grid grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="h-16 mb-2 flex items-center justify-center">
+                         <img src="https://lh3.googleusercontent.com/pw/AP1GczOKhE2W54h9G3Fk3yR0Z3xZ_l9Zl8Dq5wXwWJ7yXQGg9t3Jt3t3e_rF4kKzL8wY3cKjV7t5qQ2nF1jR9xZ9a8c7b6d_e" alt="Signature" class="h-full object-contain">
+                    </div>
+                    <p class="font-bold text-gray-800">Alex Johnson</p>
+                </div>
+                <div class="text-center">
+                    <div class="h-16 mb-2 flex items-center justify-center">
+                         <img src="https://lh3.googleusercontent.com/pw/AP1GczOKhE2W54h9G3Fk3yR0Z3xZ_l9Zl8Dq5wXwWJ7yXQGg9t3Jt3t3e_rF4kKzL8wY3cKjV7t5qQ2nF1jR9xZ9a8c7b6d_e" alt="Signature" class="h-full object-contain">
+                    </div>
+                    <p class="font-bold text-gray-800">Maria Garcia</p>
+                </div>
+                <div class="text-center">
+                    <div class="h-16 mb-2 flex items-center justify-center">
+                         <img src="https://lh3.googleusercontent.com/pw/AP1GczOKhE2W54h9G3Fk3yR0Z3xZ_l9Zl8Dq5wXwWJ7yXQGg9t3Jt3t3e_rF4kKzL8wY3cKjV7t5qQ2nF1jR9xZ9a8c7b6d_e" alt="Signature" class="h-full object-contain">
+                    </div>
+                    <p class="font-bold text-gray-800">David Chen</p>
+                </div>
+                <div class="text-center">
+                    <div class="h-16 mb-2 flex items-center justify-center">
+                         <img src="https://lh3.googleusercontent.com/pw/AP1GczOKhE2W54h9G3Fk3yR0Z3xZ_l9Zl8Dq5wXwWJ7yXQGg9t3Jt3t3e_rF4kKzL8wY3cKjV7t5qQ2nF1jR9xZ9a8c7b6d_e" alt="Signature" class="h-full object-contain">
+                    </div>
+                    <p class="font-bold text-gray-800">Sarah Lee</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount') || '0';
+        const formattedAmount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const transactionId = `LC-INV-${today.getTime()}`;
+        document.getElementById('receipt-amount').textContent = formattedAmount;
+        document.getElementById('receipt-total').textContent = formattedAmount;
+        document.getElementById('receipt-date').textContent = formattedDate;
+        document.getElementById('receipt-tid').textContent = transactionId;
+        const downloadButton = document.getElementById('downloadReceiptBtn');
+        downloadButton.addEventListener('click', function() {
+            downloadButton.disabled = true;
+            downloadButton.innerHTML = 'Generating...';
+            const { jsPDF } = window.jspdf;
+            const receiptElement = document.getElementById('receipt-content');
+            html2canvas(receiptElement, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`LeafCalc_Receipt_${transactionId}.pdf`);
+                downloadButton.disabled = false;
+                downloadButton.innerHTML = '<span class="material-icons">download</span> Download Receipt';
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

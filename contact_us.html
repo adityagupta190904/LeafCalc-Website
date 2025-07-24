@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - LeafCalc</title>
+    <link rel="icon" type="image/png" href="../Logos/Leafcalc Fevicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <style type="text/tailwindcss">
+        :root {
+            --fern-green: #53d22c;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+        }
+        .focus\:ring-fern-green:focus {
+            --tw-ring-color: var(--fern-green);
+        }
+        .border-fern-green {
+            border-color: var(--fern-green);
+        }
+        /* Keyframe animations */
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        /* Animation utility classes */
+        .animate-fade-in-up {
+            animation: fade-in-up 0.7s ease-out forwards;
+        }
+        .animate-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Glassmorphic Header (No Account Icon) -->
+    <header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <a href="landingpage_after_signup.html" class="flex items-center">
+                    <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+                    <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+                </a>
+            </div>
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html">Home</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="landingpage_after_signup.html#about-us">About Us</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="policies.html">Policies</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-16">
+        <div class="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-[#53d22c]">Get in Touch</h1>
+                <p class="mt-2 text-gray-500">We'd love to hear from you. Please fill out the form below and we'll get back to you shortly.</p>
+            </div>
+            
+            <!-- Glassmorphic Form Card -->
+            <div id="contactCard" class="bg-white/50 backdrop-blur-xl border border-white/30 rounded-2xl shadow-xl p-8 md:p-10 animate-fade-in-up">
+                
+                <form id="contactForm" novalidate>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Full Name -->
+                        <div>
+                            <label for="name" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                                <span class="material-icons text-base">person</span> Full Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="name" name="name" required class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+                        </div>
+
+                        <!-- Email Address -->
+                        <div>
+                            <label for="email" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                                <span class="material-icons text-base">email</span> Email Address <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" required class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+                        </div>
+
+                        <!-- Contact Number -->
+                        <div>
+                            <label for="phone" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                                <span class="material-icons text-base">phone</span> Contact Number <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" id="phone" name="phone" required class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+                        </div>
+
+                        <!-- Company Name -->
+                        <div>
+                            <label for="company" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                                <span class="material-icons text-base">business</span> Company Name <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="company" name="company" required class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+                        </div>
+
+                        <!-- Position -->
+                        <div class="md:col-span-2">
+                             <label for="position" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                                <span class="material-icons text-base">badge</span> Your Position <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="position" name="position" required class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green">
+                        </div>
+
+                        <!-- Message -->
+                        <div class="md:col-span-2">
+                            <label for="message" class="flex items-center gap-2 mb-2 text-sm font-semibold text-gray-700">
+                                <span class="material-icons text-base">message</span> Your Message <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="message" name="message" rows="6" maxlength="500" required class="block w-full rounded-lg border border-gray-300 px-4 py-3 bg-white/30 shadow-inner focus:outline-none focus:ring-2 focus:ring-fern-green"></textarea>
+                            <div id="charCounter" class="text-xs text-right text-gray-500 mt-1">0 / 500</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 text-center">
+                       <button type="submit" class="w-full md:w-auto px-12 py-3 rounded-full bg-[#53d22c] text-white font-semibold shadow-lg border border-white/20
+                                 hover:bg-[#47b324] active:scale-95 transition-all duration-300 ease-out 
+                                 hover:shadow-xl hover:-translate-y-1 hover:scale-105">
+    Send Message
+</button>
+                    </div>
+                </form>
+                
+                <!-- Success Message -->
+                <div id="successMessage" class="hidden text-center py-10">
+                    <span class="material-icons text-7xl text-[#53d22c]">check_circle_outline</span>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-4">Message Sent!</h3>
+                    <p class="text-gray-600 mt-2">Thank you for reaching out. We have received your message and will get back to you as soon as possible.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const contactForm = document.getElementById('contactForm');
+        const successMessage = document.getElementById('successMessage');
+        const messageTextarea = document.getElementById('message');
+        const charCounter = document.getElementById('charCounter');
+        
+        // Character counter logic
+        messageTextarea.addEventListener('input', () => {
+            const currentLength = messageTextarea.value.length;
+            charCounter.textContent = `${currentLength} / 500`;
+        });
+
+        // Form submission logic
+        contactForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Stop the form from submitting the traditional way
+
+            let isValid = true;
+            const requiredFields = contactForm.querySelectorAll('[required]');
+
+            // Simple validation check
+            requiredFields.forEach(field => {
+                field.classList.remove('border-red-500', 'animate-shake');
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('border-red-500');
+                    // Add shake animation for better feedback
+                    setTimeout(() => {
+                        field.classList.add('animate-shake');
+                    }, 50);
+                }
+            });
+
+            if (isValid) {
+                // If the form is valid, hide the form and show the success message
+                contactForm.classList.add('hidden');
+                successMessage.classList.remove('hidden');
+                
+                // Here you would typically send the data to a backend server or service
+                // For this example, we'll just log it to the console.
+                const formData = new FormData(contactForm);
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
+                }
+                
+            } else {
+                console.log('Form is invalid.');
+            }
+        });
+    </script>
+
+</body>
+</html>
