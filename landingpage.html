@@ -519,14 +519,14 @@
         if (error) {
             console.error('Error fetching user:', error.message);
             // It's safest to redirect to sign-in if we can't verify the session
-            window.location.replace('/auth/Signin.html');
+            window.location.replace('/Login/Signin.html');
             return;
         }
 
         // 2. If NO user is logged in, protect the page by redirecting to the sign-in page.
         if (!user) {
             console.log('No user logged in. Redirecting to sign-in.');
-            window.location.replace('/auth/Signin.html'); // Use your correct path
+            window.location.replace('/Login/Signin.html'); // Use your correct path
             return;
         }
 
@@ -538,7 +538,7 @@
         if (!isProfileComplete) {
             // 4. If the profile is INCOMPLETE, redirect to the form to collect details.
             console.log('User profile is incomplete. Redirecting to profile setup form.');
-            window.location.replace('/auth/signup_form.html'); // Use your correct path
+            window.location.replace('/Login/signup_form.html'); // Use your correct path
         } else {
             // 5. If the profile is COMPLETE, the user can stay. Load their avatar.
             console.log('User profile is complete. Welcome back!');
