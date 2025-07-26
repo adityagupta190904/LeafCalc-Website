@@ -87,7 +87,7 @@ async function signInWithSocialProvider(provider) {
   const { data, error } = await supabaseClient.auth.signInWithOAuth({
     provider: provider,
     options: {
-      redirectTo: window.location.origin + '/landingpage_after_signup.html'
+      redirectTo: window.location.origin + '/landingpage.html'
     }
   });
 
