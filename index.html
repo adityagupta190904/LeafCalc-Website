@@ -133,9 +133,6 @@
         <!-- Right Aligned Container: Nav + Account -->
         <div class="hidden md:flex items-center">
             <nav class="flex items-center space-x-8">
-                
-            
-                 <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="pricing.html">Pricing</a>
                 <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="#tools">Tools</a>
                 <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="#about-us">About Us</a>
             </nav>
@@ -352,28 +349,28 @@
         
         <!-- Team Member Template 1 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Aditya Gupta.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Aditya Gupta.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Aditya Gupta</h4>
             <p class="text-gray-600 text-base">CEO and Founder</p>
         </div>
 
         <!-- Team Member Template 2 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Jonathan Blake.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Jonathan Blake.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Jonathan Blake</h4>
             <p class="text-gray-600 text-base">Co-Founder</p>
         </div>
 
         <!-- Team Member Template 3 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Aiko Thompson.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Aiko Thompson.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Aiko Thompson</h4>
             <p class="text-gray-600 text-base">Environmentalist</p>
         </div>
 
         <!-- Team Member Template 4 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Edward Whitmore.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Edward Whitmore.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Edward Whitmore</h4>
             <p class="text-gray-600 text-base">CTO</p>
         </div>
@@ -470,6 +467,7 @@
                 const counter = entry.target;
                 const target = +counter.getAttribute('data-target');
                 let count = 0;
+
                 const updateCount = () => {
                     const increment = target / 100; // Animation speed
                     if (count < target) {
@@ -477,14 +475,20 @@
                         counter.innerText = Math.ceil(count).toLocaleString();
                         requestAnimationFrame(updateCount);
                     } else {
-                        counter.innerText = target.toLocaleString() + '+';
+                        const label = counter.nextElementSibling?.innerText?.trim().toLowerCase() || '';
+                        const isCountryCounter = label.includes('countries in operation');
+                        counter.innerText = isCountryCounter
+                            ? target.toLocaleString()
+                            : target.toLocaleString() + '+';
                     }
                 };
+
                 updateCount();
                 observer.unobserve(counter);
             }
         });
     }, { threshold: 0.5 });
+
     counters.forEach(counter => counterObserver.observe(counter));
 
 </script>

@@ -204,14 +204,14 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         
         <!-- AVAILABLE: Scope 1 Emissions Calculator -->
-            <a href="Scope1 Calculator/stationary_combustion.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
+            <a href="Scope1-Calculator/stationary_combustion.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
                 <span class="material-icons text-5xl text-[#53d22c]">factory</span>
                 <h3 class="font-semibold text-xl mt-4 mb-2 text-gray-900">Scope 1 Emissions Calculator</h3>
                 <p class="text-gray-600 text-base">Calculate direct emissions from owned or controlled sources.</p>
             </a>
 
        <!-- AVAILABLE: Scope 2 Emissions Calculator -->
-            <a href="Scope2 Calculator/electricity.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
+            <a href="Scope2-Calculator/electricity.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
                 <span class="material-icons text-5xl text-[#53d22c]">bolt</span>
                 <h3 class="font-semibold text-xl mt-4 mb-2 text-gray-900">Scope 2 Emissions Calculator</h3>
                 <p class="text-gray-600 text-base">Track indirect emissions from purchased electricity, steam, heating and cooling.</p>
@@ -372,28 +372,28 @@
         
         <!-- Team Member Template 1 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Aditya Gupta.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Aditya Gupta.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Aditya Gupta</h4>
             <p class="text-gray-600 text-base">CEO and Founder</p>
         </div>
 
         <!-- Team Member Template 2 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Jonathan Blake.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Jonathan Blake.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Jonathan Blake</h4>
             <p class="text-gray-600 text-base">Co-Founder</p>
         </div>
 
         <!-- Team Member Template 3 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Aiko Thompson.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Aiko Thompson.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Aiko Thompson</h4>
             <p class="text-gray-600 text-base">Environmentalist</p>
         </div>
 
         <!-- Team Member Template 4 -->
         <div class="text-center group">
-            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile Photos/Edward Whitmore.jpeg">
+            <img alt="Team Member Photo" class="w-24 h-24 rounded-full mx-auto mb-3 shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 ring-2 ring-white/30 object-cover bg-gray-200" src="Profile-Photos/Edward Whitmore.jpeg">
             <h4 class="font-bold text-lg text-gray-900">Edward Whitmore</h4>
             <p class="text-gray-600 text-base">CTO</p>
         </div>
@@ -482,6 +482,7 @@
                 const counter = entry.target;
                 const target = +counter.getAttribute('data-target');
                 let count = 0;
+
                 const updateCount = () => {
                     const increment = target / 100; // Animation speed
                     if (count < target) {
@@ -489,14 +490,20 @@
                         counter.innerText = Math.ceil(count).toLocaleString();
                         requestAnimationFrame(updateCount);
                     } else {
-                        counter.innerText = target.toLocaleString() + '+';
+                        const label = counter.nextElementSibling?.innerText?.trim().toLowerCase() || '';
+                        const isCountryCounter = label.includes('countries in operation');
+                        counter.innerText = isCountryCounter
+                            ? target.toLocaleString()
+                            : target.toLocaleString() + '+';
                     }
                 };
+
                 updateCount();
                 observer.unobserve(counter);
             }
         });
     }, { threshold: 0.5 });
+
     counters.forEach(counter => counterObserver.observe(counter));
 
 </script>
