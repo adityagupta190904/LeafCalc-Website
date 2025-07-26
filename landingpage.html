@@ -114,6 +114,7 @@
             mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
         }
     </style>
+    <script src="/supabase-client.js" defer></script>
 </head>
 <body class="overflow-x-hidden">
 
@@ -168,7 +169,7 @@
             <div class="w-px h-6 bg-gray-300 mx-6"></div>
 
             <!-- User Icon links directly to profile page -->
-           <a href="Login/user_profile.html">
+           <a href="/Login/user_profile.html">
                 <!-- 
                   THIS 'id' IS THE CRITICAL PART. 
                   It's how the JavaScript finds this specific element. 
@@ -204,14 +205,14 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         
         <!-- AVAILABLE: Scope 1 Emissions Calculator -->
-            <a href="Scope1-Calculator/stationary_combustion.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
+            <a href="/Scope1-Calculator/stationary_combustion.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
                 <span class="material-icons text-5xl text-[#53d22c]">factory</span>
                 <h3 class="font-semibold text-xl mt-4 mb-2 text-gray-900">Scope 1 Emissions Calculator</h3>
                 <p class="text-gray-600 text-base">Calculate direct emissions from owned or controlled sources.</p>
             </a>
 
        <!-- AVAILABLE: Scope 2 Emissions Calculator -->
-            <a href="Scope2-Calculator/electricity.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
+            <a href="/Scope2-Calculator/electricity.html" class="tool-card bg-white/60 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/20 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
                 <span class="material-icons text-5xl text-[#53d22c]">bolt</span>
                 <h3 class="font-semibold text-xl mt-4 mb-2 text-gray-900">Scope 2 Emissions Calculator</h3>
                 <p class="text-gray-600 text-base">Track indirect emissions from purchased electricity, steam, heating and cooling.</p>
@@ -436,7 +437,7 @@
             </div>
             <div>
                 <h4 class="font-bold mb-4 text-gray-200">Products</h4>
-                <ul class="space-y-2 text-gray-400"><li class="hover:text-white transition-colors"><a href="Scope1 Calculator/stationary_combustion.html">Scope 1 Calculator</a></li><li class="hover:text-white transition-colors"><a href="Scope2 Calculator/electricity.html">Scope 2 Calculator</a></li><li class="hover:text-white transition-colors"><a href="#">Scope 3 Calculator</a></li><li class="hover:text-white transition-colors"><a href="#">Total Carbon Footprint Dashboard</a></li></ul>
+                <ul class="space-y-2 text-gray-400"><li class="hover:text-white transition-colors"><a href="/Scope1-Calculator/stationary_combustion.html">Scope 1 Calculator</a></li><li class="hover:text-white transition-colors"><a href="/Scope2-Calculator/electricity.html">Scope 2 Calculator</a></li><li class="hover:text-white transition-colors"><a href="#">Scope 3 Calculator</a></li><li class="hover:text-white transition-colors"><a href="#">Total Carbon Footprint Dashboard</a></li></ul>
             </div>
             <div>
                 <h4 class="font-bold mb-4 text-gray-200">Resources</h4>
@@ -509,21 +510,49 @@
 </script>
 
 <script>
-    // This is the complete script for protecting pages and loading the avatar.
-    async function checkAndLoadUser() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) {
-            // CORRECT PATH
-             window.location.replace('../Login/Signin.html'); 
+    async function checkUserProfileAndRedirect() {
+        // 1. Get the current logged-in user from Supabase
+        const { data: { user }, error } = await supabaseClient.auth.getUser();
+
+        // Handle cases where we can't retrieve the user
+        if (error) {
+            console.error('Error fetching user:', error.message);
+            // It's safest to redirect to sign-in if we can't verify the session
+            window.location.replace('/auth/Signin.html');
             return;
         }
-        const avatarUrl = user.user_metadata?.avatar_url;
-        const navUserIcon = document.getElementById('nav-user-icon');
-        if (avatarUrl && navUserIcon) {
-            navUserIcon.innerHTML = `<img src="${avatarUrl}" ...>`;
+
+        // 2. If NO user is logged in, protect the page by redirecting to the sign-in page.
+        if (!user) {
+            console.log('No user logged in. Redirecting to sign-in.');
+            window.location.replace('/auth/Signin.html'); // Use your correct path
+            return;
+        }
+
+        // 3. THIS IS THE CRITICAL CHECK:
+        // We look for a piece of data that ONLY your signup_form.html provides.
+        // A new social login user will NOT have 'full_name' in their metadata yet.
+        const isProfileComplete = user.user_metadata && user.user_metadata.full_name;
+
+        if (!isProfileComplete) {
+            // 4. If the profile is INCOMPLETE, redirect to the form to collect details.
+            console.log('User profile is incomplete. Redirecting to profile setup form.');
+            window.location.replace('/auth/signup_form.html'); // Use your correct path
+        } else {
+            // 5. If the profile is COMPLETE, the user can stay. Load their avatar.
+            console.log('User profile is complete. Welcome back!');
+            const avatarUrl = user.user_metadata.avatar_url;
+            const navUserIcon = document.getElementById('nav-user-icon');
+
+            if (avatarUrl && navUserIcon) {
+                // Display the user's avatar image
+                navUserIcon.innerHTML = `<img src="${avatarUrl}" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105" />`;
+            }
         }
     }
-    document.addEventListener('DOMContentLoaded', checkAndLoadUser); 
+
+    // Run this check as soon as the page content is loaded
+    document.addEventListener('DOMContentLoaded', checkUserProfileAndRedirect);
 </script>
 
 </body>
