@@ -10,6 +10,13 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
+    <!-- === THIS IS THE FIX === -->
+<!-- 1. Load the main Supabase library FIRST. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<!-- 2. Load YOUR custom client script SECOND, using the correct root-relative path. -->
+<script src="/supabase-client.js" defer></script>
+<!-- ======================= -->
+
     <style type="text/tailwindcss">
         :root {
             --fern-green: #53d22c;
@@ -114,9 +121,7 @@
             mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
         }
     </style>
-     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    <script src="/supabase-client.js" defer></script>
-</head>
+     
 <body class="overflow-x-hidden">
 
 <!-- START: Corrected Header -->
@@ -440,7 +445,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 <script>
     // Animate sections on scroll
     const animatedElements = document.querySelectorAll('.scroll-animate');
