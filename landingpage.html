@@ -510,6 +510,11 @@
 
 </script>
 
+<!-- FIND AND DELETE the entire old <script> tag at the bottom -->
+
+<!--
+    ↓↓↓ PASTE THIS ENTIRE NEW SCRIPT BLOCK IN ITS PLACE ↓↓↓
+-->
 <script>
     async function checkUserProfileAndRedirect() {
         // 1. Get the current logged-in user from Supabase
@@ -518,29 +523,29 @@
         // Handle cases where we can't retrieve the user
         if (error) {
             console.error('Error fetching user:', error.message);
-            // It's safest to redirect to sign-in if we can't verify the session
+            // CORRECTED PATH: Points to the /Login/ folder
             window.location.replace('/Login/Signin.html');
             return;
         }
 
-        // 2. If NO user is logged in, protect the page by redirecting to the sign-in page.
+        // 2. If NO user is logged in, protect the page
         if (!user) {
             console.log('No user logged in. Redirecting to sign-in.');
-            window.location.replace('/Login/Signin.html'); // Use your correct path
+            // CORRECTED PATH: Points to the /Login/ folder
+            window.location.replace('/Login/Signin.html');
             return;
         }
 
-        // 3. THIS IS THE CRITICAL CHECK:
-        // We look for a piece of data that ONLY your signup_form.html provides.
-        // A new social login user will NOT have 'full_name' in their metadata yet.
+        // 3. Check if the user's profile is complete
         const isProfileComplete = user.user_metadata && user.user_metadata.full_name;
 
         if (!isProfileComplete) {
-            // 4. If the profile is INCOMPLETE, redirect to the form to collect details.
+            // 4. If profile is INCOMPLETE, redirect to the setup form
             console.log('User profile is incomplete. Redirecting to profile setup form.');
-            window.location.replace('/Login/signup_form.html'); // Use your correct path
+            // CORRECTED PATH: Points to the /Login/ folder
+            window.location.replace('/Login/signup_form.html');
         } else {
-            // 5. If the profile is COMPLETE, the user can stay. Load their avatar.
+            // 5. If profile is COMPLETE, the user can stay. Load their avatar.
             console.log('User profile is complete. Welcome back!');
             const avatarUrl = user.user_metadata.avatar_url;
             const navUserIcon = document.getElementById('nav-user-icon');
