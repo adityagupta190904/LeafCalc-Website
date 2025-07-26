@@ -104,12 +104,12 @@ window.signInWithSocialProvider = signInWithSocialProvider;
 supabaseClient.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN') {
     if (session?.user?.created_at === session?.user?.last_sign_in_at) {
-      window.location.href = 'signup_form.html';
+      window.location.href = '/Login/signup_form.html';
     } else {
-      window.location.href = 'landingpage.html';
+      window.location.href = '/landingpage.html';
     }
   } else if (event === 'SIGNED_OUT') {
-    window.location.href = 'Signin.html';
+    window.location.href = '/Login/Signin.html';
   }
 });
 

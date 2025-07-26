@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         localStorage.setItem('scope1_calculationData', JSON.stringify(collectedData));
-        window.location.href = 'scope1_results.html';
+        window.location.href = '/Scope1-Calculator/scope1_results.html';
     }
 
     // --- 5. HELPER UTILITIES ---

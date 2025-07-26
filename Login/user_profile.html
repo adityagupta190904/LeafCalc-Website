@@ -183,7 +183,7 @@
 </div>
 <!-- === PASTE THIS ENTIRE SCRIPT TAG BEFORE </body> === -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-client.js" defer></script> 
+<script src="/supabase-client.js" defer></script> 
 
 <!-- === PASTE THIS ENTIRE SCRIPT TAG BEFORE </body> === -->
 <script>
@@ -224,7 +224,7 @@
        
         if (error || !user) {
             console.error('Error fetching user or no user logged in:', error);
-            window.location.href = 'Signin.html'; 
+            window.location.href = '/Login/Signin.html'; 
             return;
         }
         

@@ -314,7 +314,7 @@ function handleCalculate() {
     
     // Pass the raw data to the results page via localStorage
     localStorage.setItem('calculationData', JSON.stringify(selectedRowsForCalc));
-    window.location.href = 'result.html';
+    window.location.href = '/Scope2-Calculator/result.html';
 }
 
 // =================================================================================
