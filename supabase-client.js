@@ -1,7 +1,7 @@
 // File: supabase-client.js
 // --- COPY AND PASTE THIS ENTIRE CORRECTED CODE ---
 
-const SUPABASE_URL = 'https://iwaouidutblkgaoohqxl.supabase.co';
+/*const SUPABASE_URL = 'https://iwaouidutblkgaoohqxl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3YW91aWR1dGJsa2dhb29ocXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMDkzMDksImV4cCI6MjA2ODU4NTMwOX0.XJPT3JVqUuCa9JURMiesDgny5-hp-yEXNd4YgqDtc2Q';
 
 // The fix is here: we create 'supabaseClient' from the global 'supabase' object.
@@ -30,7 +30,7 @@ if (MOCK_USER_ID && !MOCK_USER_ID.includes('PASTE')) {
     supabaseClient.auth.getUser = async () => {
         return { data: { user: mockUser }, error: null };
     };
-}   
+}   */
 // === END: DEVELOPMENT MOCK USER BLOCK ===
 
 /**
