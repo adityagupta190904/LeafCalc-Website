@@ -64,7 +64,7 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
     if (session.user.created_at === session.user.last_sign_in_at) {
         window.location.href = 'signup_form.html';
     } else {
-        window.location.href = 'landingpage_after_signup.html';
+        window.location.href = 'landingpage.html';
     }
   } else if (event === 'SIGNED_OUT') {
     window.location.href = 'Signin.html';
