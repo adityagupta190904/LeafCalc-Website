@@ -515,50 +515,47 @@
 <!--
     ↓↓↓ PASTE THIS ENTIRE NEW SCRIPT BLOCK IN ITS PLACE ↓↓↓
 -->
+<!--
+    ↓↓↓ PASTE THIS ENTIRE NEW SCRIPT BLOCK IN PLACE OF THE OLD ONE ↓↓↓
+-->
 <script>
-    async function checkUserProfileAndRedirect() {
-        // 1. Get the current logged-in user from Supabase
-        const { data: { user }, error } = await supabaseClient.auth.getUser();
+    document.addEventListener('DOMContentLoaded', () => {
+        /**
+         * This is the correct, event-driven way to handle authentication.
+         * Instead of running a check immediately, we wait for Supabase to
+         * tell us what the authentication state is.
+         */
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
 
-        // Handle cases where we can't retrieve the user
-        if (error) {
-            console.error('Error fetching user:', error.message);
-            // CORRECTED PATH: Points to the /Login/ folder
-            window.location.replace('/Login/Signin.html');
-            return;
-        }
+            // This block will run when a user is successfully signed in,
+            // either from a redirect (SIGNED_IN) or an existing session (INITIAL_SESSION).
+            if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+                const user = session.user;
 
-        // 2. If NO user is logged in, protect the page
-        if (!user) {
-            console.log('No user logged in. Redirecting to sign-in.');
-            // CORRECTED PATH: Points to the /Login/ folder
-            window.location.replace('/Login/Signin.html');
-            return;
-        }
+                // Now that we are SURE a user is logged in, we can check their profile.
+                const isProfileComplete = user.user_metadata && user.user_metadata.full_name;
 
-        // 3. Check if the user's profile is complete
-        const isProfileComplete = user.user_metadata && user.user_metadata.full_name;
+                if (!isProfileComplete) {
+                    // Profile is incomplete, so it's a new user. Redirect to the form.
+                    console.log('User profile is incomplete. Redirecting to profile setup form.');
+                    window.location.replace('/Login/signup_form.html');
+                } else {
+                    // Profile is complete, so it's a returning user.
+                    console.log('User profile is complete. Welcome back!');
+                    const avatarUrl = user.user_metadata.avatar_url;
+                    const navUserIcon = document.getElementById('nav-user-icon');
 
-        if (!isProfileComplete) {
-            // 4. If profile is INCOMPLETE, redirect to the setup form
-            console.log('User profile is incomplete. Redirecting to profile setup form.');
-            // CORRECTED PATH: Points to the /Login/ folder
-            window.location.replace('/Login/signup_form.html');
-        } else {
-            // 5. If profile is COMPLETE, the user can stay. Load their avatar.
-            console.log('User profile is complete. Welcome back!');
-            const avatarUrl = user.user_metadata.avatar_url;
-            const navUserIcon = document.getElementById('nav-user-icon');
-
-            if (avatarUrl && navUserIcon) {
-                // Display the user's avatar image
-                navUserIcon.innerHTML = `<img src="${avatarUrl}" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105" />`;
+                    if (avatarUrl && navUserIcon) {
+                        navUserIcon.innerHTML = `<img src="${avatarUrl}" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105" />`;
+                    }
+                }
+            } else if (event === 'SIGNED_OUT' || !session) {
+                // If there is no session or the user signed out, protect the page.
+                console.log('No active session. Redirecting to sign-in.');
+                window.location.replace('/Login/Signin.html');
             }
-        }
-    }
-
-    // Run this check as soon as the page content is loaded
-    document.addEventListener('DOMContentLoaded', checkUserProfileAndRedirect);
+        });
+    });
 </script>
 
 </body>
