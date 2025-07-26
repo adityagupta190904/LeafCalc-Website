@@ -187,7 +187,7 @@ signInForm.addEventListener('submit', async (event) => {
         // Supabase tracks sign-in counts for us.
         if (data.user.identities.length > 0 && data.user.created_at === data.user.last_sign_in_at) {
             // It's the first login. Send them to complete their profile.
-            window.location.href = 'signup_form.html';
+            window.location.href = '/signup_form.html';
         } else {
             // It's a returning user. Send them to the main dashboard.
             window.location.href = './landingpage.html';
