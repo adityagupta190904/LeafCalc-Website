@@ -76,39 +76,41 @@ supabaseClient.auth.onAuthStateChange((event, session) => {
 // File: supabase-client.js
 
 const SUPABASE_URL = 'https://iwaouidutblkgaoohqxl.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3YW91aWR1dGJsa2dhb29ocXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMDkzMDksImV4cCI6MjA2ODU4NTMwOX0.XJPT3JVqUuCa9JURMiesDgny5-hp-yEXNd4YgqDtc2Q';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3YW91aWR1dGJsa2dhb29ocXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMDkzMDksImV4cCI6MjA2ODU4NTMwOX0.XJPT3JVqUuCa9JURMiesDgny5-hp-yEXNd4YgqDtc2Q'; // Keep full key
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /**
- * Handles signing in with a social provider (e.g., 'google', 'github').
- * @param {'google' | 'linkedin' | 'github'} provider The social provider to sign in with.
+ * Handles social sign-in (Google, GitHub, LinkedIn)
  */
 async function signInWithSocialProvider(provider) {
-  const { error } = await supabaseClient.auth.signInWithOAuth({
+  const { data, error } = await supabaseClient.auth.signInWithOAuth({
     provider: provider,
+    options: {
+      redirectTo: window.location.origin + '/landingpage_after_signup.html'
+    }
   });
 
   if (error) {
-    console.error('Error signing in with ' + provider + ':', error.message);
-    alert('Error signing in: ' + error.message);
+    console.error('Social login error:', error.message);
+    alert('Error logging in: ' + error.message);
   }
 }
 
+// Make function globally available
 window.signInWithSocialProvider = signInWithSocialProvider;
 
-// ✅ Production Auth State Handler
+// Handle auth state changes
 supabaseClient.auth.onAuthStateChange((event, session) => {
   if (event === 'SIGNED_IN') {
-    if (session.user.created_at === session.user.last_sign_in_at) {
-      // First-time user (new account)
+    if (session?.user?.created_at === session?.user?.last_sign_in_at) {
       window.location.href = 'signup_form.html';
     } else {
-      // Returning user
       window.location.href = 'landingpage_after_signup.html';
     }
   } else if (event === 'SIGNED_OUT') {
     window.location.href = 'Signin.html';
   }
 });
+
 
