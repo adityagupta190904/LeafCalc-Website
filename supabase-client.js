@@ -30,35 +30,24 @@ window.signInWithSocialProvider = signInWithSocialProvider;
 // 3.  AUTH-STATE OBSERVER  (runs on every page that imports this file)
 // ------------------------------------------------------------------
 supabaseClient.auth.onAuthStateChange(async (event, session) => {
-  const pathname = window.location.pathname;
+  // give the cookie a moment to settle
+  if (event === 'INITIAL_SESSION') {
+    const { data: { session: fresh } } = await supabaseClient.auth.getSession();
+    if (!fresh) return;  // really no session
 
-  // --- CASE 1:  Not logged-in but trying to reach protected pages
-  const protectedPaths = [
-    '/landingpage.html',
-    '/Login/signup_form.html',
-    '/Login/user_profile.html'
-  ];
-  const isProtected = protectedPaths.some(p => pathname.endsWith(p));
-  if (isProtected && !session) {
-    window.location.replace('/Login/Signin.html');
-    return;
-  }
+    const pathname = window.location.pathname;
 
-  // --- CASE 2:  Landing page (check profile completeness)
-  if (pathname.endsWith('/landingpage.html')) {
-    if (!session?.user) return; // handled above
-
-    const { data: profile, error } = await supabaseClient
+    // first-time user?
+    const { data: profile } = await supabaseClient
       .from('profiles')
-      .select('full_name, company, designation')
-      .eq('id', session.user.id)
+      .select('id')
+      .eq('id', fresh.user.id)
       .single();
 
-    // If profile row is missing or incomplete, redirect to finish it
-    const missingProfile =
-      error || !profile?.full_name?.trim() || !profile?.company?.trim() || !profile?.designation?.trim();
-    if (missingProfile) {
+    if (!profile && !pathname.endsWith('/Login/signup_form.html')) {
       window.location.replace('/Login/signup_form.html');
+    } else if (profile && pathname.endsWith('/Login/Signin.html')) {
+      window.location.replace('/landingpage.html');
     }
   }
 });
