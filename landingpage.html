@@ -115,7 +115,7 @@
         }
     </style>
      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-    <script src="/supabase-client.js" defer></script>
+<script src="/supabase-client.js" type="module" defer></script>
 </head>
 <body class="overflow-x-hidden">
 
@@ -510,96 +510,8 @@
 
 </script>
 
-<!-- FIND AND DELETE the entire old <script> tag at the bottom -->
 
-<!--
-    ↓↓↓ PASTE THIS ENTIRE NEW SCRIPT BLOCK IN ITS PLACE ↓↓↓
--->
-<!--
-    ↓↓↓ PASTE THIS ENTIRE NEW SCRIPT BLOCK IN PLACE OF THE OLD ONE ↓↓↓
--->
-<!-- Show this overlay while checking session/profile -->
-<div id="loading-overlay" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm transition-opacity duration-300">
-  <div class="text-center text-white">
-    <span class="material-icons text-8xl text-[#53d22c] animate-pulse">eco</span>
-    <p class="text-2xl font-bold mt-4">Processing, Please Wait...</p>
-    <p class="text-base text-gray-300 mt-2">Connecting You To The Server...</p>
-  </div>
-</div>
 
-<script type="module">
-  import { supabaseClient } from '/supabase-client.js';
-
-  // Get a reference to the loading overlay element.
-  const loadingOverlay = document.getElementById('loading-overlay');
-
-  /**
-   * Shows the loading overlay.
-   */
-  const showLoading = () => loadingOverlay?.classList.remove('hidden');
-
-  /**
-   * Hides the loading overlay.
-   */
-  const hideLoading = () => loadingOverlay?.classList.add('hidden');
-
-  /**
-   * Redirects the browser to a specified path.
-   * @param {string} path - The path to redirect to.
-   */
-  const redirectTo = (path) => {
-    window.location.replace(path);
-  };
-
-  // Immediately show the loading overlay to prevent content flashing.
-  showLoading();
-
-  // Listen for changes in the authentication state.
-  supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    // 1. Check for a valid session.
-    if (!session?.user) {
-      console.log("No active session. Redirecting to sign-in.");
-      redirectTo("/Login/Signin.html");
-      return; // Stop execution if no user is signed in.
-    }
-
-    const { user } = session;
-
-    try {
-      // 2. Fetch the user's profile from the 'profiles' table.
-      const { data: profile, error } = await supabaseClient
-        .from("profiles")
-        .select("full_name, company, designation")
-        .eq("id", user.id)
-        .single();
-
-      // Handle potential errors during the profile fetch.
-      // This also covers the case where a profile does not exist, as .single() will return an error.
-      if (error || !profile) {
-        console.warn("Profile not found or error fetching profile. Redirecting to profile creation.", error);
-        redirectTo("/Login/signup_form.html");
-        return;
-      }
-
-      // 3. Check if the profile is complete.
-      const isProfileComplete = profile.full_name?.trim() && profile.company?.trim() && profile.designation?.trim();
-
-      if (!isProfileComplete) {
-        console.warn("User profile is incomplete. Redirecting to profile update form.");
-        redirectTo("/Login/signup_form.html");
-      } else {
-        // 4. If all checks pass, grant access.
-        console.log("Authentication successful and profile complete. Access granted.");
-        hideLoading(); // Hide the overlay and reveal the page content.
-      }
-    } catch (err) {
-      console.error("An unexpected error occurred during profile verification:", err);
-      // As a fallback, hide loading and redirect to a safe page.
-      hideLoading();
-      redirectTo("/Login/Signin.html");
-    }
-  });
-</script>
 
 
 </body>
