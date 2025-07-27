@@ -522,20 +522,21 @@
 <div id="loading-overlay" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm transition-opacity duration-300">
   <div class="text-center text-white">
     <span class="material-icons text-8xl text-[#53d22c] animate-pulse">eco</span>
-    <p class="text-2xl font-bold mt-4">Calculating Emissions...</p>
-    <p class="text-base text-gray-300 mt-2">Contacting the Climatiq API for accurate data...</p>
+    <p class="text-2xl font-bold mt-4">Processing, Please Wait...</p>
+    <p class="text-base text-gray-300 mt-2">Connecting You To The Server...</p>
   </div>
 </div>
 
 <script type="module">
-  import { supabaseClient } from './supabase-client.js';
+  import { supabaseClient } from '../supabase-client.js';
 
   const loadingOverlay = document.getElementById('loading-overlay');
 
-  // Use auth state change to reliably detect login from OAuth
+  // Show the loading overlay while auth state is being determined
+  loadingOverlay?.classList.remove("hidden");
+
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if (!session || !session.user) {
-      // User is not logged in — go to sign-in
       console.log("No session found. Redirecting to Signin.");
       window.location.replace("/Login/Signin.html");
       return;
@@ -544,37 +545,36 @@
     const user = session.user;
 
     try {
-      // Fetch profile data from 'profiles' table
+      // Fetch profile data
       const { data: profile, error } = await supabaseClient
         .from("profiles")
         .select("full_name, company, designation")
         .eq("id", user.id)
         .single();
 
-      // If profile row doesn't exist or error happens — treat as incomplete
       if (error || !profile) {
         console.warn("No profile found. Redirecting to signup form.");
         window.location.replace("/Login/signup_form.html");
         return;
       }
 
-      // Check if the essential fields are present
-      const isProfileComplete = profile.full_name && profile.company && profile.designation;
+      // Check completeness of profile
+      const isComplete = profile.full_name?.trim() && profile.company?.trim() && profile.designation?.trim();
 
-      if (!isProfileComplete) {
+      if (!isComplete) {
         console.warn("Incomplete profile. Redirecting to signup form.");
         window.location.replace("/Login/signup_form.html");
       } else {
-        // Profile is complete — let user access landing page
-        console.log("Profile complete. Welcome!");
-        loadingOverlay.classList.add("hidden"); // Hide loading UI
+        console.log("Profile complete. User allowed.");
+        loadingOverlay?.classList.add("hidden"); // Hide loading when ready
       }
-    } catch (e) {
-      console.error("Unexpected error checking profile:", e);
+    } catch (err) {
+      console.error("Error verifying user profile:", err);
       window.location.replace("/Login/Signin.html");
     }
   });
 </script>
+
 
 </body>
 </html>
