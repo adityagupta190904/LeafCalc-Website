@@ -150,6 +150,17 @@
     </div>
 </div>
 <!-- NEW: Reusable Javascript function -->
+ <script type="module">
+  import { supabaseClient } from '/supabase-client.js';
+
+  window.signInWithSocialProvider = async (provider) => {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/landingpage.html` }
+    });
+    if (error) alert('Error signing in: ' + error.message);
+  };
+</script>
 <script>
     function togglePasswordVisibility(inputId, buttonEl) {
         const input = document.getElementById(inputId);
@@ -164,17 +175,8 @@
     }
 
     // --- Social Sign In Function ---
-    // Make sure you have this function if you are using social providers
-    async function signInWithSocialProvider(provider) {
-        const { data, error } = await supabaseClient.auth.signInWithOAuth({
-            provider: provider,
-        });
+ 
 
-        if (error) {
-            alert('Error signing in: ' + error.message);
-        }
-        // Redirects to provider's page, then back to your site
-    }
 
 
     const signUpForm = document.querySelector('form');
@@ -220,5 +222,7 @@
         }
     });
 </script>
+
+
 </body>
 </html>
