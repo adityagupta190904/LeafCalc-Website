@@ -530,47 +530,73 @@
 <script type="module">
   import { supabaseClient } from '../supabase-client.js';
 
+  // Get a reference to the loading overlay element.
   const loadingOverlay = document.getElementById('loading-overlay');
 
-  // Show the loading overlay while auth state is being determined
-  loadingOverlay?.classList.remove("hidden");
+  /**
+   * Shows the loading overlay.
+   */
+  const showLoading = () => loadingOverlay?.classList.remove('hidden');
 
+  /**
+   * Hides the loading overlay.
+   */
+  const hideLoading = () => loadingOverlay?.classList.add('hidden');
+
+  /**
+   * Redirects the browser to a specified path.
+   * @param {string} path - The path to redirect to.
+   */
+  const redirectTo = (path) => {
+    window.location.replace(path);
+  };
+
+  // Immediately show the loading overlay to prevent content flashing.
+  showLoading();
+
+  // Listen for changes in the authentication state.
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    if (!session || !session.user) {
-      console.log("No session found. Redirecting to Signin.");
-      window.location.replace("/Login/Signin.html");
-      return;
+    // 1. Check for a valid session.
+    if (!session?.user) {
+      console.log("No active session. Redirecting to sign-in.");
+      redirectTo("/Login/Signin.html");
+      return; // Stop execution if no user is signed in.
     }
 
-    const user = session.user;
+    const { user } = session;
 
     try {
-      // Fetch profile data
+      // 2. Fetch the user's profile from the 'profiles' table.
       const { data: profile, error } = await supabaseClient
         .from("profiles")
         .select("full_name, company, designation")
         .eq("id", user.id)
         .single();
 
+      // Handle potential errors during the profile fetch.
+      // This also covers the case where a profile does not exist, as .single() will return an error.
       if (error || !profile) {
-        console.warn("No profile found. Redirecting to signup form.");
-        window.location.replace("/Login/signup_form.html");
+        console.warn("Profile not found or error fetching profile. Redirecting to profile creation.", error);
+        redirectTo("/Login/signup_form.html");
         return;
       }
 
-      // Check completeness of profile
-      const isComplete = profile.full_name?.trim() && profile.company?.trim() && profile.designation?.trim();
+      // 3. Check if the profile is complete.
+      const isProfileComplete = profile.full_name?.trim() && profile.company?.trim() && profile.designation?.trim();
 
-      if (!isComplete) {
-        console.warn("Incomplete profile. Redirecting to signup form.");
-        window.location.replace("/Login/signup_form.html");
+      if (!isProfileComplete) {
+        console.warn("User profile is incomplete. Redirecting to profile update form.");
+        redirectTo("/Login/signup_form.html");
       } else {
-        console.log("Profile complete. User allowed.");
-        loadingOverlay?.classList.add("hidden"); // Hide loading when ready
+        // 4. If all checks pass, grant access.
+        console.log("Authentication successful and profile complete. Access granted.");
+        hideLoading(); // Hide the overlay and reveal the page content.
       }
     } catch (err) {
-      console.error("Error verifying user profile:", err);
-      window.location.replace("/Login/Signin.html");
+      console.error("An unexpected error occurred during profile verification:", err);
+      // As a fallback, hide loading and redirect to a safe page.
+      hideLoading();
+      redirectTo("/Login/Signin.html");
     }
   });
 </script>
