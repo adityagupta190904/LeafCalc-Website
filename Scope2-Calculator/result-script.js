@@ -105,12 +105,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log("API calculation successful!");
         const categoryTotals = processApiResults(results, selectedMonthData);
         const grandTotal = Object.values(categoryTotals).reduce((sum, val) => sum + val, 0);
-        
+        await saveResultsToDatabase(grandTotal, categoryTotals, selectedMonth, 'API');
         renderDashboard(selectedMonth, grandTotal, categoryTotals, processHistoricalData(allHistoricalData), 'API');
 
     } catch (error) {
         console.warn(`API calculation failed: ${error.message}. FALLING BACK TO MANUAL CALCULATION.`);
         const { grandTotal, categoryTotals } = performManualCalculations(selectedMonthData);
+        await saveResultsToDatabase(grandTotal, categoryTotals, selectedMonth, 'Manual');
         renderDashboard(selectedMonth, grandTotal, categoryTotals, processHistoricalData(allHistoricalData), 'Manual');
     }
 
@@ -156,6 +157,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         return processed;
     }
+
+    // =================================================================================
+// --- ADD THIS ENTIRE BLOCK ---
+// --- NEW DATABASE SAVING FUNCTION ---
+// =================================================================================
+
+async function saveResultsToDatabase(grandTotal, breakdown, reportingPeriod, method) {
+    // We need to get the user again inside this function scope
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+        console.error("Cannot save results: User not found.");
+        return; // Exit if no user
+    }
+
+    const summary = generateSummaryAndSuggestions(grandTotal, breakdown, {}, reportingPeriod, method, true); // Get text only
+
+    const resultData = {
+        user_id: user.id,
+        scope: 2, // This is for Scope 2
+        reporting_period: reportingPeriod,
+        total_emissions_tonnes: grandTotal / 1000,
+        breakdown: breakdown, // The JSON object of the breakdown
+        summary_text: summary.summary,
+        suggestions_text: summary.suggestion,
+        calculation_method: method
+    };
+    
+    console.log("Saving Scope 2 result to Supabase:", resultData);
+
+    const { error } = await supabaseClient
+        .from('emissions_results')
+        .upsert(resultData, {
+            onConflict: 'user_id, scope, reporting_period' // The unique constraint
+        });
+
+    if (error) {
+        console.error("Failed to save result to dashboard:", error);
+        // We show a non-blocking toast instead of throwing an error
+        showToast("Warning: Could not save result summary to dashboard.", "error");
+    } else {
+        console.log("Scope 2 result successfully saved to database.");
+    }
+}
     
     // =================================================================================
     // --- 5. UI, CHARTING, AND DYNAMIC CONTENT FUNCTIONS ---
@@ -209,47 +253,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    function generateSummaryAndSuggestions(totals, historical, month, method) {
-        const summaryContainer = document.getElementById('summary-text-container');
-        const suggestionsContainer = document.getElementById('suggestions-text-container');
-        let summaryHTML = `<p class="text-xs text-gray-500 italic">Calculation powered by: <strong>${method === 'API' ? 'Climatiq Real-Time API' : 'GHG Protocol Benchmarks (Manual Fallback)'}</strong></p>`;
-        let suggestionsHTML = '';
+  // Replace the old generateSummaryAndSuggestions with this one
+function generateSummaryAndSuggestions(totals, historical, month, method, textOnly = false) {
+    let summaryText = '';
+    let suggestionText = '';
 
-        if (totals.electricity === undefined) return; // Guard clause
+    const grandTotal = Object.values(totals).reduce((sum, val) => sum + val, 0);
 
-        const grandTotal = Object.values(totals).reduce((sum, val) => sum + val, 0);
-
-        if (grandTotal <= 0) {
-            summaryHTML += '<p class="mt-2">No emissions were recorded for this period.</p>';
-            suggestionsHTML = '<p>Go back to the summary page and select a period with data to see suggestions.</p>';
+    if (grandTotal <= 0) {
+        summaryText = 'No emissions were recorded for this period.';
+        suggestionText = 'Go back to add data to see suggestions.';
+    } else {
+        const topCategory = Object.keys(totals).reduce((a, b) => totals[a] > totals[b] ? a : b);
+        const topPercentage = ((totals[topCategory] / grandTotal) * 100).toFixed(1);
+        summaryText = `In ${formatMonthYear(month)}, your top emissions source was <strong>${capitalize(topCategory)}</strong>, at <strong>${topPercentage}%</strong> of the total.`;
+        
+        const electricityComparison = totals.electricity - BENCHMARKS_KG_CO2E.electricity;
+        if (electricityComparison > 0) {
+             summaryText += ` Your electricity emissions were <strong>${(electricityComparison / BENCHMARKS_KG_CO2E.electricity * 100).toFixed(0)}% higher</strong> than the benchmark.`;
+             suggestionText = `<strong>Focus on electricity:</strong> An energy audit or upgrading to efficient appliances could significantly reduce emissions.`;
         } else {
-            const topCategory = Object.keys(totals).reduce((a, b) => totals[a] > totals[b] ? a : b);
-            const topPercentage = ((totals[topCategory] / grandTotal) * 100).toFixed(1);
-            summaryHTML += `<p class="mt-2">In ${formatMonthYear(month)}, your top emissions source was <strong>${capitalize(topCategory)}</strong>, at <strong>${topPercentage}%</strong> of the total.</p>`;
-            
-            const prevMonth = getPreviousMonth(month);
-            const currentElectricity = totals.electricity;
-            const prevElectricity = historical.electricity[prevMonth] || 0;
-
-            if (prevElectricity > 0) {
-                const trend = ((currentElectricity - prevElectricity) / prevElectricity) * 100;
-                if (trend > 5) {
-                    summaryHTML += `<p>Your electricity emissions have <strong>increased by ${trend.toFixed(0)}%</strong> since last month.</p>`;
-                    suggestionsHTML += `<p><strong>Investigate rising electricity use:</strong> A significant month-over-month increase suggests new equipment usage or inefficiencies. An energy audit is recommended.</p>`;
-                } else if (trend < -5) {
-                    summaryHTML += `<p>Great work! Your electricity emissions have <strong>decreased by ${Math.abs(trend).toFixed(0)}%</strong> since last month.</p>`;
-                    suggestionsHTML += `<p><strong>Maintain momentum:</strong> You're on the right track. Continue your current strategies and explore options like green energy tariffs to further reduce your impact.</p>`;
-                } else {
-                    summaryHTML += `<p>Your electricity emissions are stable compared to last month.</p>`;
-                }
-            } else {
-                 summaryHTML += `<p>This is your first month with electricity data, establishing a new baseline.</p>`;
-                 suggestionsHTML += `<p><strong>Set a baseline:</strong> Use this month's data as a starting point. Set a goal to reduce emissions by 5-10% over the next quarter.</p>`;
-            }
+             summaryText += ` Your electricity emissions are performing well against the benchmark. Great work!`;
+             suggestionText = `<strong>Maintain best practices:</strong> Continue monitoring to maintain this strong performance.`;
         }
-        summaryContainer.innerHTML = summaryHTML;
-        suggestionsContainer.innerHTML = suggestionsHTML;
     }
+
+    if (textOnly) {
+        // Return plain text for the database save function
+        return { summary: summaryText.replace(/<[^>]*>/g, ''), suggestion: suggestionText.replace(/<[^>]*>/g, '') };
+    }
+
+    // Otherwise, update the page HTML
+    const summaryContainer = document.getElementById('summary-text-container');
+    const suggestionsContainer = document.getElementById('suggestions-text-container');
+    
+    summaryContainer.innerHTML = `<p class="text-xs text-gray-500 italic">Calculation powered by: <strong>${method}</strong></p><p class="mt-2">${summaryText}</p>`;
+    suggestionsContainer.innerHTML = `<p>${suggestionText}</p>`;
+}
     
     function showLoadingState() { if (loadingOverlay) loadingOverlay.classList.remove('hidden'); }
     function hideLoadingState() { if (loadingOverlay) loadingOverlay.classList.add('hidden'); }

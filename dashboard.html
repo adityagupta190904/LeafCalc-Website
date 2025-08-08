@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <title>LeafCalc - Executive Dashboard</title>
+  <link rel="icon" type="image/png" href="/Logos/Leafcalc Fevicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Chart.js and Date Adapter (for time-series charts) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js" defer></script>
+
+  <style type="text/tailwindcss">
+    :root {
+      --fern-green: #53d22c;
+      --scope1-color: #ff6f00; /* Orange */
+      --scope2-color: #7E57C2; /* Purple */
+      --scope3-color: #f59e0b; /* Amber */
+    }
+    body { font-family: 'Inter', sans-serif; @apply bg-gray-100; }
+    .card { @apply bg-white/40 backdrop-blur-xl border border-white/30 rounded-2xl shadow-lg transition-all duration-300; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body class="text-gray-800">
+
+  <!-- Header -->
+  <header class="fixed top-0 inset-x-0 z-50 border-b border-white/20 bg-white/60 shadow-lg backdrop-blur-lg">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        
+        <!-- Logo -->
+        <div class="flex items-center">
+            <span class="material-icons text-4xl text-[#53d22c]">eco</span>
+            <span class="text-2xl font-bold ml-2 text-gray-800">LeafCalc</span>
+        </div>
+        
+        <!-- Right Aligned Container: Nav + Account -->
+        <div class="hidden md:flex items-center">
+            <nav class="flex items-center space-x-8">
+    
+             <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="/landingpage.html">Home</a>
+                <a class="text-gray-600 hover:text-[#53d22c] transition-colors" href="/landingpage.html#about-us">About Us</a>
+            </nav>
+
+            <!-- Vertical Fade Line -->
+            <div class="w-px h-6 bg-gray-300 mx-6"></div>
+
+            <!-- User Icon links directly to profile page -->
+           <a href="/Login/user_profile.html">
+                <!-- 
+                  THIS 'id' IS THE CRITICAL PART. 
+                  It's how the JavaScript finds this specific element. 
+                -->
+                <div id="nav-user-icon">
+                    <!-- Default SVG Icon shows while the user's avatar is loading -->
+                    <svg alt="User Account" class="w-10 h-10 rounded-full cursor-pointer transition-all duration-300 ring-2 ring-transparent hover:ring-[#53d22c] hover:scale-105" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#E0F8D8"/><circle cx="50" cy="38" r="18" fill="#53D22C"/><circle cx="50" cy="105" r="40" fill="#53D22C"/></svg>
+                </div>
+            </a>
+        </div>
+    </div>
+</header>
+
+  <main class="p-4 md:p-8 max-w-screen-2xl mx-auto">
+    <!-- Page header + filters -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-3xl font-extrabold text-gray-900">Executive Dashboard</h1>
+        <p class="text-gray-600 mt-1">A high-level overview of your organization's carbon footprint.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <select id="date-range-select" class="rounded-lg border-gray-300 p-2 bg-white text-sm shadow-sm">
+          <option value="90">Last 3 Months</option>
+          <option value="180">Last 6 Months</option>
+          <option value="365" selected>Last 12 Months</option>
+          <option value="all">All Time</option>
+        </select>
+        <button id="refresh-button" class="p-2 rounded-lg bg-white border border-gray-300 shadow-sm transition hover:bg-gray-50"><span class="material-icons">refresh</span></button>
+      </div>
+    </div>
+
+    <!-- KPI row -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div class="card p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><p class="text-sm text-gray-600">Total Emissions</p><span class="material-icons text-3xl text-[var(--fern-green)]">public</span></div>
+        <p id="kpi-total-emissions" class="text-4xl font-bold mt-2">-- tCO₂e</p>
+        <p class="text-sm text-gray-500 mt-2">Sum of latest Scope 1 & 2 reports.</p>
+      </div>
+      <div class="card p-5">
+        <div class="flex items-center justify-between"><p class="text-sm text-gray-600">Scope 1 (Direct)</p><span class="material-icons text-3xl text-[var(--scope1-color)]">factory</span></div>
+        <p id="kpi-scope1-emissions" class="text-3xl font-bold mt-2">-- tCO₂e</p>
+        <a id="kpi-scope1-link" class="text-sm text-blue-600 mt-2 inline-block" href="/Scope1-Calculator/review.html">View latest report →</a>
+      </div>
+      <div class="card p-5">
+        <div class="flex items-center justify-between"><p class="text-sm text-gray-600">Scope 2 (Energy)</p><span class="material-icons text-3xl text-[var(--scope2-color)]">bolt</span></div>
+        <p id="kpi-scope2-emissions" class="text-3xl font-bold mt-2">-- tCO₂e</p>
+        <a id="kpi-scope2-link" class="text-sm text-purple-600 mt-2 inline-block" href="/Scope2-Calculator/summary.html">View latest report →</a>
+      </div>
+      <div class="card p-5 bg-amber-50/80 border-amber-200/50">
+        <div class="flex items-center justify-between"><p class="text-sm text-amber-800">Scope 3 (Value Chain)</p><span class="material-icons text-3xl text-[var(--scope3-color)]">local_shipping</span></div>
+        <p class="text-3xl font-bold mt-2 text-amber-900">—</p>
+        <p class="text-xs text-amber-700 mt-2">Coming soon in future updates.</p>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="mt-8 grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div class="card p-6">
+        <h3 class="font-bold text-lg">Scope 1 vs. Scope 2 Breakdown</h3>
+        <div class="h-64 flex items-center justify-center mt-4"><canvas id="donutChart"></canvas></div>
+      </div>
+      <div class="card p-6 xl:col-span-2">
+        <h3 class="font-bold text-lg">Emissions Trend (tCO₂e)</h3>
+        <div class="mt-4 h-72 relative"><canvas id="trendChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Bottom area: Top sources + Summary -->
+    <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <div class="card p-6">
+        <h3 class="font-bold text-lg mb-4">Top Emission Sources</h3>
+        <div id="top-sources-list" class="space-y-4 text-sm"><p class="text-gray-500">Loading top sources...</p></div>
+      </div>
+      <div class="card p-6">
+        <h3 class="font-bold text-lg mb-4">AI Summary & Suggestions</h3>
+        <div id="summary-area" class="space-y-4 text-sm"><p class="text-gray-500">Generating insights...</p></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="fixed inset-0 bg-gray-900/40 z-50 hidden items-center justify-center backdrop-blur-sm">
+      <div class="text-center text-white p-8"><span class="material-icons text-6xl text-white animate-spin">autorenew</span><p class="font-semibold mt-4 text-lg">Fetching Dashboard Data...</p></div>
+  </div>
+
+  <script src="/dashboard-script.js" defer></script>
+</body>
+</html>
