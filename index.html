@@ -393,10 +393,10 @@
                 <div>
                     <h4 class="text-2xl font-bold mb-4 text-gray-800">Our Impact by the Numbers</h4>
                     <div class="grid grid-cols-2 gap-6">
-                        <div class="bg-white/50 backdrop-blur-md p-4 rounded-xl shadow-lg text-center transition-transform duration-300 hover:-translate-y-1"><span class="counter text-3xl font-bold text-[#53d22c]" data-target="50000">0</span><p class="text-sm font-semibold text-gray-700 mt-1">Total Users</p></div>
-                        <div class="bg-white/50 backdrop-blur-md p-4 rounded-xl shadow-lg text-center transition-transform duration-300 hover:-translate-y-1"><span class="counter text-3xl font-bold text-[#53d22c]" data-target="30000">0</span><p class="text-sm font-semibold text-gray-700 mt-1">Daily Active Users</p></div>
+                        <div class="bg-white/50 backdrop-blur-md p-4 rounded-xl shadow-lg text-center transition-transform duration-300 hover:-translate-y-1"><span class="counter text-3xl font-bold text-[#53d22c]" data-target="80">0</span><p class="text-sm font-semibold text-gray-700 mt-1">SMEs Partners</p></div>
+                        <div class="bg-white/50 backdrop-blur-md p-4 rounded-xl shadow-lg text-center transition-transform duration-300 hover:-translate-y-1"><span class="counter text-3xl font-bold text-[#53d22c]" data-target="11">0</span><p class="text-sm font-semibold text-gray-700 mt-1">Activation Rate</p></div>
                         <div class="bg-white/50 backdrop-blur-md p-4 rounded-xl shadow-lg text-center transition-transform duration-300 hover:-translate-y-1"><span class="counter text-3xl font-bold text-[#53d22c]" data-target="3">0</span><p class="text-sm font-semibold text-gray-700 mt-1">Countries in Operation</p></div>
-                        <div class="bg-white/50 backdrop-blur-md p-4 rounded-xl shadow-lg text-center transition-transform duration-300 hover:-translate-y-1"><span class="counter text-3xl font-bold text-[#53d22c]" data-target="80">0</span><p class="text-sm font-semibold text-gray-700 mt-1">Enterprise Partners</p></div>
+                        <div class="bg-white/50 backdrop-blur-md p-4 rounded-xl shadow-lg text-center transition-transform duration-300 hover:-translate-y-1"><span class="counter text-3xl font-bold text-[#53d22c]" data-target="100">0</span><p class="text-sm font-semibold text-gray-700 mt-1">Organic Growth</p></div>
                     </div>
                 </div>
 
@@ -431,7 +431,7 @@
             </div>
             <div>
                 <h4 class="font-bold mb-4 text-gray-200">Company</h4>
-                <ul class="space-y-2 text-gray-400"><li class="hover:text-white transition-colors"><a href="#about-us">About Us</a></li><li class="hover:text-white transition-colors"><a href="#">Careers</a></li><li class="hover:text-white transition-colors"><a href="contact_us.html">Contact Us</a></li><li class="hover:text-white transition-colors"><a href="terms_and_conditions.html">Terms and Conditions</a></li><li class="hover:text-white transition-colors"><a href="investor.html">For Investors</a></li></ul>
+                <ul class="space-y-2 text-gray-400"><li class="hover:text-white transition-colors"><a href="#about-us">About Us</a></li><li class="hover:text-white transition-colors"><a href="#">Careers</a></li><li class="hover:text-white transition-colors"><a href="contact_us.html">Contact Us</a></li><li class="hover:text-white transition-colors"><a href="terms_and_conditions.html">Terms and Conditions</a></li></ul>
             </div>
         </div>
         <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
@@ -464,37 +464,45 @@
     });
     animatedElements.forEach(el => observer.observe(el));
 
-    // Counter Animation
-    const counters = document.querySelectorAll('.counter');
-    const counterObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const counter = entry.target;
-                const target = +counter.getAttribute('data-target');
-                let count = 0;
+   // Counter Animation
+const counters = document.querySelectorAll('.counter');
+const counterObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const counter = entry.target;
+            const target = +counter.getAttribute('data-target');
+            let count = 0;
 
-                const updateCount = () => {
-                    const increment = target / 100; // Animation speed
-                    if (count < target) {
-                        count += increment;
-                        counter.innerText = Math.ceil(count).toLocaleString();
-                        requestAnimationFrame(updateCount);
+            const updateCount = () => {
+                const increment = target / 100; // Animation speed
+                if (count < target) {
+                    count += increment;
+                    counter.innerText = Math.ceil(count).toLocaleString();
+                    requestAnimationFrame(updateCount);
+                } else {
+                    const label = counter.nextElementSibling?.innerText?.trim().toLowerCase() || '';
+                    const needsPercentage = label.includes('activation rate') || label.includes('organic growth');
+                    const isExactNumber = label.includes('countries in operation');
+
+                    if (needsPercentage) {
+                        counter.innerText = target.toLocaleString() + '%';
+                    } else if (isExactNumber) {
+                        counter.innerText = target.toLocaleString();
                     } else {
-                        const label = counter.nextElementSibling?.innerText?.trim().toLowerCase() || '';
-                        const isCountryCounter = label.includes('countries in operation');
-                        counter.innerText = isCountryCounter
-                            ? target.toLocaleString()
-                            : target.toLocaleString() + '+';
+                        counter.innerText = target.toLocaleString() + '+';
                     }
-                };
+                }
+            };
 
-                updateCount();
-                observer.unobserve(counter);
-            }
-        });
-    }, { threshold: 0.5 });
+            updateCount();
+            observer.unobserve(counter);
+        }
+    });
+}, { threshold: 0.5 }); // Optional: starts animation when 50% of the element is visible
 
-    counters.forEach(counter => counterObserver.observe(counter));
+counters.forEach(counter => {
+    counterObserver.observe(counter);
+});
 
 </script>
 
